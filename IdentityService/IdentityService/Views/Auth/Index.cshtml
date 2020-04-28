@@ -1,0 +1,20 @@
+﻿@model IdentityService.Models.AuthViewModel
+
+@{
+    ViewData["Title"] = "Auth";
+
+    var googleRedirectUri = $"https://accounts.google.com/o/oauth2/v2/auth?state={Model.State}&redirect_uri={Model.GoogleCredentials.PostLoginRedirectUrl}&response_type=code&client_id={Model.GoogleCredentials.ClientId}&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&access_type=offline&include_granted_scopes=true";
+}
+
+<div class="row">
+    <div class="col-sm-4 col-sm-push-4">
+        <h3 class="text-center">Select preferable authentication method:</h3>
+        <br/>
+        <div class="row">
+            <div class="col-sm-4 col-sm-push-4">
+                <a href="@googleRedirectUri" class="btn btn-info btn-block" role="button">Google</a>
+            </div>
+        </div>
+    </div>
+</div>
+
