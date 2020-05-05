@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Common", "0 - Common", "{0AF98E4A-1D5F-4D7D-AD22-C9D283C535CE}"
 EndProject
@@ -30,15 +30,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyHard.Tests", "StudyHard\StudyHard.Tests\StudyHard.Tests.csproj", "{B6BD2524-1956-4F5B-BEEA-E31A71E3B5A6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6 - Migrations", "6 - Migrations", "{50353578-EAAD-4907-890C-73700E71A725}"
-	ProjectSection(SolutionItems) = preProject
-		0001_Initial.sql = 0001_Initial.sql
-		0002_Create table User Role.sql = 0002_Create table User Role.sql
-		0003_Create stored procedure GetOrAddUser.sql = 0003_Create stored procedure GetOrAddUser.sql
-	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyHard.Domain", "StudyHard.Domain\StudyHard.Domain.csproj", "{CEEB2077-A663-4B05-A4C9-BEC5FA6798F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyHard.Domain", "StudyHard.Domain\StudyHard.Domain.csproj", "{CEEB2077-A663-4B05-A4C9-BEC5FA6798F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyHard.Persistence", "StudyHard.Persistence\StudyHard.Persistence.csproj", "{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyHard.Persistence", "StudyHard.Persistence\StudyHard.Persistence.csproj", "{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExecuteMigrations", "ExecuteMigrations\ExecuteMigrations.csproj", "{7A97543C-A64C-4483-B2C0-197AADCCB5F6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +79,10 @@ Global
 		{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +97,7 @@ Global
 		{B6BD2524-1956-4F5B-BEEA-E31A71E3B5A6} = {FDB5CFAA-34CD-40E7-AABB-001691C8DA1B}
 		{CEEB2077-A663-4B05-A4C9-BEC5FA6798F8} = {6B291AA3-E360-442D-86B7-7929A64263D8}
 		{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E} = {1BF3A77F-909F-4793-8F4E-E473B256D16D}
+		{7A97543C-A64C-4483-B2C0-197AADCCB5F6} = {50353578-EAAD-4907-890C-73700E71A725}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69E75ECA-0F5B-418F-BD6C-17EEB024E823}
