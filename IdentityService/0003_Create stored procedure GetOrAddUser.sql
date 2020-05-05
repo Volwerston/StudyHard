@@ -1,4 +1,4 @@
-CREATE PROCEDURE dbo.GetOrAddUser
+CREATE OR ALTER PROCEDURE dbo.GetOrAddUser
 @email nvarchar(256),
 @role nvarchar(64)
 AS
