@@ -33,7 +33,7 @@ namespace IdentityService
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(option => option.EnableEndpointRouting = false);
 
             services.AddSingleton(Settings);
             services.AddSingleton<IDbConnection>(sp => new SqlConnection(Settings.DbConnectionString));
@@ -44,7 +44,7 @@ namespace IdentityService
             }));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseExceptionMiddleware();
 

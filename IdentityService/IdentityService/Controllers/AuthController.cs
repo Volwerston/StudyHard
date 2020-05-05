@@ -3,16 +3,16 @@ using Common.System;
 using IdentityService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Google.Apis.Auth;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using IdentityService.Infrastructure.Configuration;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System;
 using System.Linq;
 using IdentityService.Domain;
 using IdentityService.Persistence.Interfaces;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Controllers
 {
@@ -78,7 +78,6 @@ namespace IdentityService.Controllers
             var user = new User
             {
                 Email = payload.Email,
-                Role = Roles.Regular
             };
 
             await _userRepository.Save(user);
