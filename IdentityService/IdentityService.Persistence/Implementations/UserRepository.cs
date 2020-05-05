@@ -26,7 +26,7 @@ namespace IdentityService.Persistence.Implementations
         {
             var queryParameters = new DynamicParameters();
             queryParameters.Add("@email", user.Email);
-            queryParameters.Add("@role", user.Role);
+            queryParameters.Add("@role", Roles.Regular);  //Yuriy, please update this to be up to date
 
             var command = new CommandDefinition(
                 "GetOrAddUser",
