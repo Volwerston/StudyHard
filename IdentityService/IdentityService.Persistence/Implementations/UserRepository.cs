@@ -19,14 +19,18 @@ namespace IdentityService.Persistence.Implementations
 
         public async Task<IReadOnlyCollection<Role>> FindRoles(User user)
             => (await _connection.QueryAsync<Role>(
-                "SELECT Role as Name FROM [dbo].[user_role] WHERE Email = @Email",
+                @"SELECT R.Id, R.Name 
+                     FROM[dbo].[User] U
+                     INNER JOIN[dbo].[UserRoles] UR ON U.Id = UR.UserId
+                     INNER JOIN[dbo].[Role] R ON R.Id = UR.RoleId
+                     WHERE U.Email = @Email",
                 new {user.Email})).ToArray();
 
         public Task Save(User user)
         {
             var queryParameters = new DynamicParameters();
             queryParameters.Add("@email", user.Email);
-            queryParameters.Add("@role", Roles.Regular);  //Yuriy, please update this to be up to date
+            queryParameters.Add("@name", user.Name); 
 
             var command = new CommandDefinition(
                 "GetOrAddUser",

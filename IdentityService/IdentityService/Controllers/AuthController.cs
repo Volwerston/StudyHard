@@ -78,6 +78,7 @@ namespace IdentityService.Controllers
             var user = new User
             {
                 Email = payload.Email,
+                Name = payload.Name
             };
 
             await _userRepository.Save(user);
@@ -86,7 +87,8 @@ namespace IdentityService.Controllers
             var claims = new[]
             {
                  new Claim(JwtRegisteredClaimNames.Sub, payload.Email),
-                 new Claim(ClaimTypes.Name, payload.Email),
+                 new Claim(ClaimTypes.Email, payload.Email),
+                 new Claim(ClaimTypes.Name, payload.Name), 
                  new Claim(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name)))
             };
 
