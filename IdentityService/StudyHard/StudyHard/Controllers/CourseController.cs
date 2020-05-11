@@ -24,7 +24,6 @@ namespace StudyHard.Controllers
         public async Task<ViewResult> Index()
         {
             //we may move it to some service, but if the logic is not complex - nothing bad to keep it in controller
-            var courses = _courseRepository.GetCourses();
             CourseListModel model = new CourseListModel
             {
                 Courses = await _courseRepository.GetCourses()

@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyHard.Persistence", "St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExecuteMigrations", "ExecuteMigrations\ExecuteMigrations.csproj", "{7A97543C-A64C-4483-B2C0-197AADCCB5F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyHard.Service", "StudyHard.Service\StudyHard.Service.csproj", "{DD09EAFF-F80A-40BF-A781-D1DF817F1F99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A97543C-A64C-4483-B2C0-197AADCCB5F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD09EAFF-F80A-40BF-A781-D1DF817F1F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD09EAFF-F80A-40BF-A781-D1DF817F1F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD09EAFF-F80A-40BF-A781-D1DF817F1F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD09EAFF-F80A-40BF-A781-D1DF817F1F99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +104,7 @@ Global
 		{CEEB2077-A663-4B05-A4C9-BEC5FA6798F8} = {6B291AA3-E360-442D-86B7-7929A64263D8}
 		{100A1737-DF2D-4C08-AAD6-4972B1AFDB7E} = {1BF3A77F-909F-4793-8F4E-E473B256D16D}
 		{7A97543C-A64C-4483-B2C0-197AADCCB5F6} = {50353578-EAAD-4907-890C-73700E71A725}
+		{DD09EAFF-F80A-40BF-A781-D1DF817F1F99} = {1BF3A77F-909F-4793-8F4E-E473B256D16D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69E75ECA-0F5B-418F-BD6C-17EEB024E823}
