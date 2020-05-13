@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityService.Persistence.Implementations;
 using IdentityService.Persistence.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,6 +29,7 @@ namespace StudyHard
             services.AddControllersWithViews();
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddTransient<ICourseRepository, CourseRepository>(provider => new CourseRepository(connectionString));
+            services.AddTransient<ITutorRepository, TutorRepository>(provider => new TutorRepository(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

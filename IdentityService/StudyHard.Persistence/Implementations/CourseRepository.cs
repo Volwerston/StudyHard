@@ -84,5 +84,13 @@ namespace StudyHard.Persistence.Implementations
                     new {Id = id});
             }
         }
+
+        public async Task<IReadOnlyCollection<CourseType>> GetCourseTypes()
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return (await db.QueryAsync<CourseType>("SELECT * FROM CourseType")).ToArray();
+            }
+        }
     }
 }
