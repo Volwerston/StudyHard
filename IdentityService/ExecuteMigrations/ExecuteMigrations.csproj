@@ -31,6 +31,9 @@
     <None Update="migrations\0007_Add User Skills.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="migrations\0008_Populate DB.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
