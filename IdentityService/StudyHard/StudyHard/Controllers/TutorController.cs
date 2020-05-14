@@ -2,17 +2,18 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using StudyHard.Models;
 using StudyHard.Persistence.Interfaces;
 
 namespace StudyHard.Controllers
 {
     [Route("tutors")]
-    public class SearchTutorController : Controller
+    public class TutorController : Controller
     {
         private readonly ITutorRepository _tutorRepository;
         private readonly ICourseRepository _courseRepository;
 
-        public SearchTutorController(
+        public TutorController(
             ITutorRepository tutorRepository,
             ICourseRepository courseRepository)
         {
@@ -32,7 +33,7 @@ namespace StudyHard.Controllers
         }
 
         [HttpPost("find")]
-        public async Task<IActionResult> Index([FromBody] FindTutorsRequest request)
+        public async Task<IActionResult> Find([FromBody] FindTutorsRequest request)
         {
             if (request.Courses == null || request.Courses.Length == 0)
             {
@@ -47,6 +48,17 @@ namespace StudyHard.Controllers
                 request.PageSize);
 
             return Ok(tutors);
+        }
+
+        [HttpGet("search")]
+        public async Task<ViewResult> Search()
+        {
+            var courseTypes = await _courseRepository.GetCourseTypes();
+
+            return View(new TutorSearchViewModel
+            {
+                Skills = courseTypes.Select(ct => ct.Type).ToArray()
+            });
         }
     }
 }

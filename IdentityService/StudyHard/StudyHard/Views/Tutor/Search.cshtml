@@ -1,0 +1,93 @@
+﻿@model TutorSearchViewModel
+@{
+    ViewData["Title"] = "Search";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+<select id="skills" multiple>
+    @foreach (var skill in Model.Skills)
+    {
+        <option>@skill</option>
+    }
+</select>
+<button type="button" id="search" class="btn btn-light">Search</button>
+
+<div id="container"></div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+
+        var pageSize = 10;
+        var pageNumber = 1;
+
+        $(document).ready(function() {
+            GetData();
+
+            $('#skills').selectpicker();
+
+            $("#search").click(function() {
+                $("#container").empty();
+                pageNumber = 1;
+
+                GetData();
+            });
+
+            $(window).scroll(function() {
+                if ($(window).scrollTop() ===
+                    $(document).height() - $(window).height()) {
+                    GetData();
+                }
+            });
+        });
+
+        function GetRowForTutor(tutor) {
+            return `<div class="container" style="border: 1px solid lightgrey; margin: 10px">
+                        <div class="row">
+                            <div class="col-8">
+                                <h4>${tutor.name}</h4>
+                                <p>${tutor.email}</p>
+                                <p>Courses: ${tutor.skills.map(s => s.type).join()}</p>
+                            </div>
+                        </div>
+                    </div>`;
+        }
+
+        function GetData() {
+            $.ajax({
+                type: 'POST',
+                url: '/tutors/find',
+                data: JSON.stringify({
+                    "PageNumber": pageNumber,
+                    "PageSize": pageSize,
+                    "Courses": $('#skills').val()
+                }),
+                dataType: 'json',
+                contentType: "application/json",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                success: function(data) {
+                    console.log(JSON.stringify(data));
+                    if (data != null && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#container").append(GetRowForTutor(data[i]));
+                        }
+                        pageNumber++;
+                    }
+
+                    if (pageNumber === 1) {
+                        $("#container").append('<p>No tutors found.</p>');
+                    }
+                },
+                error: function(e) {
+                    alert("Error while retrieving data!");
+                    console.log(JSON.stringify(e));
+                }
+            });
+        }
+    </script>
+}
