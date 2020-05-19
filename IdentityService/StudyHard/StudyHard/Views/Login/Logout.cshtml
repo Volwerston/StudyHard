@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Logout";
+}
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    var cookieName = ".AspNetCore.Application.Id";
+    function createCookie(name,value,days) {
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime()+(days*24*60*60*1000));
+            var expires = "; expires="+date.toGMTString();
+        }
+        else var expires = "";
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+    function eraseCookie(name) {
+        createCookie(name,"",-1);
+    }
+    var cookies = document.cookie.split(";");
+    for (var i = 0; i < cookies.length; i++)
+        eraseCookie(cookies[i].split("=")[0]);
+    window.location.href = "@Url.Action("Index","Home")";
+</script>

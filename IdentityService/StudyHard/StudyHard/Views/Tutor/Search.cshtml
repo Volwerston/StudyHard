@@ -5,15 +5,17 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
 
-<select id="skills" multiple>
-    @foreach (var skill in Model.Skills)
-    {
-        <option>@skill</option>
-    }
-</select>
-<button type="button" id="search" class="btn btn-light">Search</button>
+<div style="margin: auto; margin-top: 5%">
+    <select id="skills" multiple>
+        @foreach (var skill in Model.Skills)
+        {
+            <option>@skill</option>
+        }
+    </select>
+    <button type="button" id="search" class="btn btn-light">Search</button>
 
-<div id="container"></div>
+    <div id="container"></div>
+</div>
 
 @section Scripts
 {
