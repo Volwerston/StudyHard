@@ -4,6 +4,7 @@ BEGIN
 		Id INT IDENTITY(1,1) NOT NULL,
 		UserId1 INT REFERENCES [User] (Id),
 		UserId2 INT REFERENCES [User] (Id),
+	    CREATED DATETIME NOT NULL,
         CONSTRAINT PK_Chat_Id PRIMARY KEY(Id),
         CONSTRAINT UK_Chat_Users_Id UNIQUE (UserId1, UserId2)
 	)
