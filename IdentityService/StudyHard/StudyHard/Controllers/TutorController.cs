@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,7 +78,7 @@ namespace StudyHard.Controllers
             {
                 Tutor = tutor,
                 Courses = courses,
-                Blogs = blogs
+                Blogs = blogs.OrderByDescending(b => b.CreationDateTimeUtc).ToArray()
             });
         }
 
@@ -91,6 +92,33 @@ namespace StudyHard.Controllers
             {
                 Skills = courseTypes.Select(ct => ct.Type).ToArray()
             });
+        }
+
+        public class CreateBlogRequestModel
+        {
+            public int TutorId { get; set; }
+
+            [Required]
+            public string Title { get; set; }
+
+            [Required]
+            public string Text { get; set; }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateBlog([FromForm] CreateBlogRequestModel model)
+        {
+            var blog = new Blog
+            {
+                CreationDateTimeUtc = DateTime.UtcNow,
+                Text = model.Text,
+                Title = model.Title
+            };
+
+            await _tutorRepository.AddBlog(model.TutorId, blog);
+
+            return RedirectToAction("PersonalPage", new {tutorId = model.TutorId});
         }
     }
 }

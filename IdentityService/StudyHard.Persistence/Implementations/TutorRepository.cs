@@ -18,6 +18,16 @@ namespace StudyHard.Persistence.Implementations
             _connectionString = connectionString;
         }
 
+        public async Task AddBlog(int tutorId, Blog blog)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(
+                    @"INSERT INTO [dbo].[Blog] VALUES(@Title, @Text, @CreationDateTimeUtc, @tutorId)",
+                    new { blog.Title, blog.Text, blog.CreationDateTimeUtc, tutorId });
+            }
+        }
+
         public async Task<IReadOnlyCollection<Tutor>> Find(string[] courses, int pageNumber, int pageSize)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -42,11 +52,11 @@ namespace StudyHard.Persistence.Implementations
                         WHERE R.Name='Tutor'";
 
                 using (var multi = await connection.QueryMultipleAsync(
-                    sql, 
+                    sql,
                     new
                     {
                         courses,
-                        offsetCount = (pageNumber - 1)*pageSize,
+                        offsetCount = (pageNumber - 1) * pageSize,
                         fetchCount = pageSize
                     }))
                 {
