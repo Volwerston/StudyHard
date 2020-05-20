@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -11,10 +12,18 @@ namespace IdentityService.Persistence.Implementations
     public class UserRepository : IUserRepository
     {
         private IDbConnection _connection;
+        private string _connectionString;
 
-        public UserRepository(IDbConnection connection)
+        public UserRepository(IDbConnection connection, string connectionString)
         {
             _connection = connection;
+            _connectionString = connectionString;
+        }
+
+        public List<User> FindUsers(List<long> userIds)
+        {
+            return _connection.Query<User>("SELECT * FROM [dbo].[User] WHERE Id IN @UserIds",
+                new {UserIds = userIds}).ToList();
         }
 
         public async Task<IReadOnlyCollection<Role>> FindRoles(User user)
@@ -38,6 +47,22 @@ namespace IdentityService.Persistence.Implementations
                 commandType: CommandType.StoredProcedure);
 
             return _connection.ExecuteAsync(command);
+        }
+
+        public long GetUserIdByEmail(string email)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                var users = _connection.Query<User>("SELECT * FROM [dbo].[User] WHERE Email = @Email",
+                    new {Email = email}).ToList();
+
+                if (users.Any())
+                {
+                    return users.First().Id;
+                }
+
+                return -1;
+            }
         }
     }
 }

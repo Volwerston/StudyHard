@@ -4,4 +4,9 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\IdentityService.Persistence\IdentityService.Persistence.csproj" />
+      <ProjectReference Include="..\StudyHard.Persistence\StudyHard.Persistence.csproj" />
+    </ItemGroup>
+
 </Project>

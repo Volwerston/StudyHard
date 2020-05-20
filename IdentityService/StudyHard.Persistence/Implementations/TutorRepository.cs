@@ -42,11 +42,11 @@ namespace StudyHard.Persistence.Implementations
                         WHERE R.Name='Tutor'";
 
                 using (var multi = await connection.QueryMultipleAsync(
-                    sql, 
+                    sql,
                     new
                     {
                         courses,
-                        offsetCount = (pageNumber - 1)*pageSize,
+                        offsetCount = (pageNumber - 1) * pageSize,
                         fetchCount = pageSize
                     }))
                 {

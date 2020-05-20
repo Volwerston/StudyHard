@@ -10,7 +10,7 @@ namespace ExecuteMigrations
             // IMPORTANT: before running migration with new scripts,
             // make sure you set 'Copy to Output Directory' as 'Copy always' for new .sql files
 
-            const string connectionString = "SpecifyBeforeRunning";
+            const string connectionString = "Server=.;Database=StudyHard;Trusted_Connection=True;";
 
             var upgradeEngine = DeployChanges.To
                 .SqlDatabase(connectionString)

@@ -16,6 +16,14 @@
     <ProjectReference Include="..\..\IdentityService.Domain\IdentityService.Domain.csproj" />
     <ProjectReference Include="..\..\IdentityService.Persistence\IdentityService.Persistence.csproj" />
     <ProjectReference Include="..\..\StudyHard.Persistence\StudyHard.Persistence.csproj" />
+    <ProjectReference Include="..\..\StudyHard.Service\StudyHard.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Views\Chat\ChatView.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
 

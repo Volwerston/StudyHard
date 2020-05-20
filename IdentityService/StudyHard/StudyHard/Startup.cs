@@ -14,6 +14,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using StudyHard.Persistence.Implementations;
 using StudyHard.Persistence.Interfaces;
+using StudyHard.Service.Implementations;
+using StudyHard.Service.Interfaces;
 
 namespace StudyHard
 {
@@ -51,12 +53,16 @@ namespace StudyHard
                 });
 
             var connectionString = Configuration.GetConnectionString("StudyHardDatabase");
+            var dbConnection = new SqlConnection(connectionString);
             services.AddSingleton<IDbConnection>(sp => new SqlConnection(connectionString));
             services.AddControllersWithViews();
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>(provider => new UserRepository(dbConnection, connectionString));
             services.AddSingleton(Settings);
             services.AddTransient<ICourseRepository, CourseRepository>(provider => new CourseRepository(connectionString));
             services.AddTransient<ITutorRepository, TutorRepository>(provider => new TutorRepository(connectionString));
+            services.AddTransient<IChatRepository, ChatRepository>(provider => new ChatRepository(connectionString));
+            
+            services.AddTransient<IChatService, ChatService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

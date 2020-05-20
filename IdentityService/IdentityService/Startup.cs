@@ -35,9 +35,11 @@ namespace IdentityService
 
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
+            var dbConnection = new SqlConnection(Settings.DbConnectionString);
             services.AddSingleton(Settings);
             services.AddSingleton<IDbConnection>(sp => new SqlConnection(Settings.DbConnectionString));
-            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>(provider =>
+                new UserRepository(dbConnection, Settings.DbConnectionString));
             services.AddSingleton(new GoogleClient.GoogleClient(new GoogleSettings
             {
                 ServiceUrl = Settings.GoogleServiceUrl

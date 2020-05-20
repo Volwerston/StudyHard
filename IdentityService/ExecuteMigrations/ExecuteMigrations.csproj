@@ -37,6 +37,9 @@
     <None Update="migrations\0009_Add test tutor and customer with Oauth support.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="migrations\0010_Add Chat.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
