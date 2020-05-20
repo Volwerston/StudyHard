@@ -1,0 +1,88 @@
+﻿@using Microsoft.AspNetCore.Html
+@using System.Security.Claims
+@model StudyHard.Controllers.TutorController.TutorPersonalPageViewModel
+
+@{
+    ViewData["Title"] = "PersonalPage";
+    string createBlogUrl = Url.Action("CreateBlog", "Tutor");
+    string userEmail = User.Claims.Single(c => c.Type == ClaimTypes.Email).Value;
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="~/css/codemirror.min.css">
+<link href="~/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="~/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+<div style="margin: 5%">
+    <h3 class="text-center">@Model.Tutor.Name</h3>
+    <p class="text-center">@Model.Tutor.Email</p>
+    <p class="text-center">Courses: @string.Join(',', Model.Courses.Select(c => c.Type))</p>
+</div>
+
+@if (userEmail == Model.Tutor.Email)
+{
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Create blog
+        </button>
+    </div>
+}
+
+@foreach (var blog in Model.Blogs)
+{
+    <div style="border: 1px solid lightgrey; margin: 3%; padding: 5%;">
+        <h3 class="text-center">@blog.Title</h3>
+        <p><i>@blog.CreationDateTimeUtc.ToString("D")</i></p>
+        <div>
+            @(new HtmlString(@blog.Text))
+        </div>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@createBlogUrl" method="post">
+                    <input type="hidden" name="tutorId" value="@Model.Tutor.Id" />
+                    <div class="form-group">
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Title">
+                    </div>
+                    <div class="form-group">
+                        <textarea name="text" id="comment-text"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/froala_editor.pkgd.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('textarea#comment-text').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+                    '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                    'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                    '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                    '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+                imageUploadParam: 'file',
+                imageUploadURL: '/api/file/froala-image',
+                imageUploadMethod: 'POST',
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                    'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+            });
+        });
+    </script>
+}

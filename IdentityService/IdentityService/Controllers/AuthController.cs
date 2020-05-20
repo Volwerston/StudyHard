@@ -86,7 +86,7 @@ namespace IdentityService.Controllers
 
             var claims = new[]
             {
-                 new Claim(JwtRegisteredClaimNames.Sub, payload.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, payload.Email),
                  new Claim(ClaimTypes.Email, payload.Email),
                  new Claim(ClaimTypes.Name, payload.Name), 
                  new Claim(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name)))

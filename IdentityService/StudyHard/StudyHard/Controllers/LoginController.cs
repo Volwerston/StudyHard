@@ -13,7 +13,7 @@ namespace StudyHard.Controllers
             _settings = settings;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string token)
         {
             return View(_settings);
         }
