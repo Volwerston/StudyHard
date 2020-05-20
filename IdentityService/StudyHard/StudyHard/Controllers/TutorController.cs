@@ -1,7 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudyHard.Domain;
 using StudyHard.Models;
 using StudyHard.Persistence.Interfaces;
 
@@ -50,6 +53,35 @@ namespace StudyHard.Controllers
             return Ok(tutors);
         }
 
+        public class TutorPersonalPageViewModel
+        {
+            public Tutor Tutor { get; set; }
+            public IReadOnlyCollection<CourseType> Courses { get; set; }
+            public IReadOnlyCollection<Blog> Blogs { get; set; }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> PersonalPage(int tutorId)
+        {
+            var tutor = await _tutorRepository.Find(tutorId);
+            if (tutor == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var courses = await _tutorRepository.GetCourses(tutorId);
+            var blogs = await _tutorRepository.GetBlogs(tutorId);
+
+            return View(new TutorPersonalPageViewModel
+            {
+                Tutor = tutor,
+                Courses = courses,
+                Blogs = blogs
+            });
+        }
+
+        [Authorize]
         [HttpGet("search")]
         public async Task<ViewResult> Search()
         {

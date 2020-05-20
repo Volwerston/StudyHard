@@ -1,0 +1,11 @@
+﻿@model StudyHard.Controllers.TutorController.TutorPersonalPageViewModel
+
+@{
+    ViewData["Title"] = "PersonalPage";
+}
+
+<div style="margin: 5%">
+    <h3 class="text-center">@Model.Tutor.Name</h3>
+    <p class="text-center">@Model.Tutor.Email</p>
+    <p class="text-center">Courses: @string.Join(',', Model.Courses.Select(c => c.Type))</p>
+</div>

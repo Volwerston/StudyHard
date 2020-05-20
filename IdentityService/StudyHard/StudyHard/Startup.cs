@@ -99,6 +99,7 @@ namespace StudyHard
             });
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

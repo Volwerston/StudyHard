@@ -1,6 +1,7 @@
 ﻿@model TutorSearchViewModel
 @{
     ViewData["Title"] = "Search";
+    string tutorPageBaseUrl = Url.Action("PersonalPage", "Tutor");
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
@@ -24,6 +25,7 @@
 
         var pageSize = 10;
         var pageNumber = 1;
+        var tutorPageBaseUrl = '@tutorPageBaseUrl';
 
         $(document).ready(function() {
             GetData();
@@ -46,7 +48,7 @@
         });
 
         function GetRowForTutor(tutor) {
-            return `<div class="container" style="border: 1px solid lightgrey; margin: 10px">
+            return `<div class="container" onClick="window.location.href='${tutorPageBaseUrl}?tutorId=${tutor.id}'" style="border: 1px solid lightgrey; margin: 10px; cursor: pointer;">
                         <div class="row">
                             <div class="col-8">
                                 <h4>${tutor.name}</h4>

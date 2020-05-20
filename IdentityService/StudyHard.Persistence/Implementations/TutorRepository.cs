@@ -76,5 +76,42 @@ namespace StudyHard.Persistence.Implementations
                 }
             }
         }
+
+        public async Task<Tutor> Find(int tutorId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return await connection.QuerySingleOrDefaultAsync<Tutor>(
+                    @"SELECT U.Id, U.Name, U.Email
+                         FROM [dbo].[User] U
+                         INNER JOIN [dbo].[UserRoles] UR ON U.Id = UR.UserId
+                         INNER JOIN [dbo].[Role] R ON R.Id = UR.RoleId
+                         WHERE U.Id = @tutorId AND R.Name='Tutor'",
+                    new { tutorId });
+            }
+        }
+
+        public async Task<IReadOnlyCollection<Blog>> GetBlogs(int tutorId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return (await connection.QueryAsync<Blog>(
+                    @"SELECT * FROM [dbo].[Blog] WHERE UserId = @tutorId",
+                    new { tutorId })).ToArray();
+            }
+        }
+
+        public async Task<IReadOnlyCollection<CourseType>> GetCourses(int tutorId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return (await connection.QueryAsync<CourseType>(
+                    @"SELECT CT.Id, CT.Type FROM [dbo].[User] U
+                INNER JOIN [dbo].[UserSkills] US ON U.Id = US.UserId
+                INNER JOIN [dbo].[CourseType] CT ON CT.Id = US.SkillId
+                WHERE U.Id = @tutorId",
+                    new { tutorId })).ToArray();
+            }
+        }
     }
 }
