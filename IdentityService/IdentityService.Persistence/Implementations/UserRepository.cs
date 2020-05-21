@@ -22,8 +22,11 @@ namespace IdentityService.Persistence.Implementations
 
         public List<User> FindUsers(List<long> userIds)
         {
-            return _connection.Query<User>("SELECT * FROM [dbo].[User] WHERE Id IN @UserIds",
-                new {UserIds = userIds}).ToList();
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return db.Query<User>("SELECT * FROM [dbo].[User] WHERE Id IN @UserIds",
+                    new {UserIds = userIds}).ToList();
+            }
         }
 
         public async Task<IReadOnlyCollection<Role>> FindRoles(User user)
@@ -53,7 +56,7 @@ namespace IdentityService.Persistence.Implementations
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                var users = _connection.Query<User>("SELECT * FROM [dbo].[User] WHERE Email = @Email",
+                var users = db.Query<User>("SELECT * FROM [dbo].[User] WHERE Email = @Email",
                     new {Email = email}).ToList();
 
                 if (users.Any())

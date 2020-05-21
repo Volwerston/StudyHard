@@ -180,10 +180,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="inbox_chat">
+                <div class="inbox_chat" id="inbox_chat">
                     @foreach (var chat in @Model.UserChats)
                     {
-                        <div prop-chat-id="@chat.ChatId" prop-chat-collcutor-id="@chat.CollocutorId"
+                        <div prop-chat-id="@chat.ChatId" prop-chat-collocutor-id="@chat.CollocutorId" prop-chat-collocutor-name="@chat.CollocutorName"
                              onclick="onChatSelected(this)">
                             <div class="chat_list @(chat.ChatId == Model.SelectedChatId ? "active_chat" : "")">
                                 <div class="chat_people">
@@ -248,7 +248,7 @@
                        
             function onChatSelected(e) {                
                 // Get selected chat id
-                let newSelectedChatId = $(e).attr('prop-chat-id');
+                let newSelectedChatId = parseInt($(e).attr('prop-chat-id'));
                 
                 if (selectedChatId == newSelectedChatId)
                 {
@@ -322,6 +322,7 @@
                         success: message => {
                             clearMessageField();
                             appendMessage(message);
+                            updateCollocutors(message);
                         },
                         error: resp => {
                             console.log(resp);
@@ -332,6 +333,42 @@
             
             function clearMessageField() {
               $('#write_msg_inp').val('');
+            }
+            
+            function updateCollocutors(message) {
+                let collocutorElem = $('div[prop-chat-id="' + selectedChatId + '"]');
+                
+                collocutorId = collocutorElem.attr('prop-chat-collocutor-id')
+                collocutorName = collocutorElem.attr('prop-chat-collocutor-name')
+              
+                messageDate = new Date(message.sendTime);
+                dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
+                
+                collocutorElem.remove();
+                $('#inbox_chat').prepend(formCollocutorData(selectedChatId, collocutorId, collocutorName, message.content, dateData[0]));
+            }
+            
+            function formCollocutorData(chatId, collocutorId, collocutorName, message, date) {
+              return `
+                        <div prop-chat-id="` + chatId + `" prop-chat-collocutor-id="` + collocutorId + `" prop-chat-collocutor-name="` + collocutorName + `"
+                             onclick="onChatSelected(this)">
+                            <div class="chat_list active_chat">
+                                <div class="chat_people">
+                                    <div class="chat_img">
+                                        <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                                    </div>
+                                    <div class="chat_ib">
+                                        <h5>
+                                            ` + collocutorName + ` <span class="chat_date">` + date + `</span>
+                                        </h5>
+                                        <p>
+                                            ` + message +`
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `
             }
                 
             
