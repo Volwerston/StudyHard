@@ -242,7 +242,8 @@
                     
                 scrollToBottom();
                 setInterval(function() {
-                    loadMessagesForChat(selectedChatId)    
+                    loadMessagesForChat(selectedChatId);
+                    updateChats();
                 }, 2500);
             })
                        
@@ -335,6 +336,30 @@
               $('#write_msg_inp').val('');
             }
             
+            function updateChats() {                       
+                $.ajax({
+                        type: 'GET',
+                        url: "/api/chat/chat-data",
+                        success: chatData => {
+                            updateChatData(chatData);
+                        },
+                        error: resp => {
+                            console.log(resp);
+                        }
+                    }
+                );    
+            }
+            
+            function updateChatData(chatData) {
+                $('#inbox_chat').empty();
+                chatData.forEach(function(chatInfo) {
+                    messageDate = new Date(chatInfo.lastMessageTime);
+                    dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
+                    $('#inbox_chat').append(formCollocutorData(chatInfo.chatId, chatInfo.collocutorId, chatInfo.collocutorName, chatInfo.lastMessage, dateData[0]));
+                });
+            }
+          
+            
             function updateCollocutors(message) {
                 let collocutorElem = $('div[prop-chat-id="' + selectedChatId + '"]');
                 
@@ -352,7 +377,7 @@
               return `
                         <div prop-chat-id="` + chatId + `" prop-chat-collocutor-id="` + collocutorId + `" prop-chat-collocutor-name="` + collocutorName + `"
                              onclick="onChatSelected(this)">
-                            <div class="chat_list active_chat">
+                            <div class="chat_list ${chatId === selectedChatId ? 'active_chat' : ''}">
                                 <div class="chat_people">
                                     <div class="chat_img">
                                         <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">

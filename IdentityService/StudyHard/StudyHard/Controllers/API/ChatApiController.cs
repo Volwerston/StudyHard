@@ -32,5 +32,11 @@ namespace StudyHard.Controllers.API
         {
             return new ObjectResult(_chatService.SaveMessage(GetUserId(), request));
         }
+        
+        [HttpGet("chat-data")]
+        public IActionResult SendMessage()
+        {
+            return new ObjectResult(_chatService.GetUserChats(GetUserId()));
+        }
     }
 }
