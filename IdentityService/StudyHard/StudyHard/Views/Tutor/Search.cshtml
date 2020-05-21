@@ -48,15 +48,33 @@
         });
 
         function GetRowForTutor(tutor) {
-            return `<div class="container" onClick="window.location.href='${tutorPageBaseUrl}?tutorId=${tutor.id}'" style="border: 1px solid lightgrey; margin: 10px; cursor: pointer;">
+            return `<div class="container" style="border: 1px solid lightgrey; margin: 10px; cursor: pointer;">
                         <div class="row">
-                            <div class="col-8">
+                            <div class="col-9">
+                                <div onClick="window.location.href='${tutorPageBaseUrl}?tutorId=${tutor.id}'">
                                 <h4>${tutor.name}</h4>
                                 <p>${tutor.email}</p>
-                                <p>Courses: ${tutor.skills.map(s => s.type).join()}</p>
+                                <p>Courses: ${tutor.skills.map(s => s.type).join()}</p>                                
+                                </div>
+                            <p><button type="button" tutor-id="${tutor.id}" class="btn btn-success" onclick="chatWith(this)">Chat</button></p>
                             </div>
                         </div>
                     </div>`;
+        }
+        
+        function chatWith(tutorDiv) {
+            tutorId = parseInt($(tutorDiv).attr('tutor-id'));
+            $.ajax({
+                    type: 'GET',
+                    url: "/api/chat/with/" + tutorId,
+                    success: chatData => {
+                        window.location.href=`/Chat/ChatView?chatId=${chatData.chatId}`
+                    },
+                    error: resp => {
+                        console.log(resp);
+                    }
+                }
+            );
         }
 
         function GetData() {

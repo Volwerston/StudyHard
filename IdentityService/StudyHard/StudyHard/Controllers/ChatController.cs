@@ -9,21 +9,21 @@ namespace StudyHard.Controllers
     public class ChatController: BaseController
     {
         private readonly IChatService _chatService;
-        
-        public ChatController(IUserRepository userRepository, IChatService chatService): base(userRepository)
+
+        public ChatController(IUserRepository userRepository, IChatService chatService) : base(userRepository)
         {
             _chatService = chatService;
         }
-        
+
         [HttpGet]
-        public IActionResult ChatView()
+        public IActionResult ChatView([FromQuery(Name = "chatId")] long? selectedChat)
         {
             long userId = GetUserId();
             var chatData = _chatService.GetUserChats(userId);
             return View(new ChatViewModel
             {
                 UserId = userId,
-                SelectedChatId = chatData.Any() ? chatData.First().ChatId : -1,
+                SelectedChatId = selectedChat ?? (chatData.Any() ? chatData.First().ChatId : -1),
                 UserChats = chatData
             });
         }
