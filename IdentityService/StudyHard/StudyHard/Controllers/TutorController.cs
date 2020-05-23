@@ -39,6 +39,11 @@ namespace StudyHard.Controllers
         [HttpPost("find")]
         public async Task<IActionResult> Find([FromBody] FindTutorsRequest request)
         {
+            if (request == null)
+            {
+                return BadRequest();
+            }
+
             if (request.Courses == null || request.Courses.Length == 0)
             {
                 var courseTypes = await _courseRepository.GetCourseTypes();
