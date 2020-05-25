@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Html
+@model StudyHard.Controllers.CourseApplicationController.CourseApplicationInfoViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div style="border: 1px solid lightgrey; margin: 3%; padding: 5%;">
+    <h4 class="text-center">@Model.Application.Name 
+    @(Model.Application.Active 
+        ? new HtmlString("<span class='badge badge-success'>ACTIVE</span>")
+        : new HtmlString("<span class='badge badge-secondary'>INACTIVE</span>"))</h4>
+    <p><i>@Model.Application.CreatedDate.ToString("D")</i></p>
+    <p>Course type: @Model.Application.CourseType.Type</p>
+    <div>
+        @(new HtmlString(@Model.Application.ShortDescription))
+    </div>
+</div>

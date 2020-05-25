@@ -52,10 +52,10 @@
                 <form action="@createBlogUrl" method="post">
                     <input type="hidden" name="tutorId" value="@Model.Tutor.Id" />
                     <div class="form-group">
-                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Title">
+                        <input type="text" name="title" required="required" class="form-control" id="exampleFormControlInput1" placeholder="Title">
                     </div>
                     <div class="form-group">
-                        <textarea name="text" id="comment-text"></textarea>
+                        <textarea name="text" required="required" id="comment-text"></textarea>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn btn-primary">Save</button>

@@ -61,7 +61,7 @@ namespace StudyHard
             services.AddTransient<ICourseRepository, CourseRepository>(provider => new CourseRepository(connectionString));
             services.AddTransient<ITutorRepository, TutorRepository>(provider => new TutorRepository(connectionString));
             services.AddTransient<IChatRepository, ChatRepository>(provider => new ChatRepository(connectionString));
-            
+            services.AddTransient<ICourseApplicationRepository, CourseApplicationRepository>(provider => new CourseApplicationRepository(connectionString));
             services.AddTransient<IChatService, ChatService>();
         }
 

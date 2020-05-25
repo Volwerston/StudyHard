@@ -5,3 +5,13 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
 </div>
+<br />
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("New", "CourseApplication")'">
+            Create course application
+        </button>
+    </div>
+}

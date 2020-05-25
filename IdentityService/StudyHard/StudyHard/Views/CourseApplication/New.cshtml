@@ -1,0 +1,57 @@
+﻿@model StudyHard.Controllers.CourseApplicationController.CourseApplicationViewModel
+@{
+    ViewData["Title"] = "Create";
+    string createCourseApplicationUrl = @Url.Action("Create", "CourseApplication");
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="~/css/codemirror.min.css">
+<link href="~/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="~/css/froala_style.min.css" rel="stylesheet" type="text/css" />
+
+<div style="margin: auto; margin-top: 5%; width: 70%">
+    <form method="post" action="@createCourseApplicationUrl">
+        <div class="form-group">
+            <input type="text" name="name" class="form-control" required="required" placeholder="Application name">
+        </div>
+        <div class="form-group">
+            <select id="course-picker" name="courseTypeId">
+                @foreach (var courseType in Model.CourseTypes)
+                {
+                    <option value="@courseType.Id">@courseType.Type</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <textarea name="shortDescription" id="description-text" required="required"></textarea>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="~/js/froala_editor.pkgd.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#course-picker').selectpicker();
+
+            $('textarea#description-text').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+                    '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                    'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                    '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                    '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+                imageUploadParam: 'file',
+                imageUploadURL: '/api/file/froala-image',
+                imageUploadMethod: 'POST',
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                    'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+            });
+        });
+    </script>
+}
