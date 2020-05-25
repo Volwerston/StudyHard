@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using StudyHard.Helpers;
 using StudyHard.Persistence.Implementations;
 using StudyHard.Persistence.Interfaces;
 using StudyHard.Service.Implementations;
@@ -63,6 +64,7 @@ namespace StudyHard
             services.AddTransient<IChatRepository, ChatRepository>(provider => new ChatRepository(connectionString));
             services.AddTransient<ICourseApplicationRepository, CourseApplicationRepository>(provider => new CourseApplicationRepository(connectionString));
             services.AddTransient<IChatService, ChatService>();
+            services.AddSingleton<IUserInfoProvider, UserInfoProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

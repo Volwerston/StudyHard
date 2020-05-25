@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using IdentityService.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using StudyHard.Domain;
+using StudyHard.Helpers;
 using StudyHard.Persistence.Interfaces;
 
 namespace StudyHard.Controllers
@@ -19,8 +20,9 @@ namespace StudyHard.Controllers
         public CourseApplicationController(
             ICourseRepository courseRepository,
             ICourseApplicationRepository courseApplicationRepository,
-            IUserRepository userRepository)
-            : base(userRepository)
+            IUserRepository userRepository,
+            IUserInfoProvider userInfoProvider)
+            : base(userRepository, userInfoProvider)
         {
             _courseRepository = courseRepository;
             _courseApplicationRepository = courseApplicationRepository;

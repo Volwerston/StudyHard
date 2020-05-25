@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using IdentityService.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using StudyHard.Helpers;
 using StudyHard.Models;
 using StudyHard.Service.Interfaces;
 
@@ -10,7 +11,11 @@ namespace StudyHard.Controllers
     {
         private readonly IChatService _chatService;
 
-        public ChatController(IUserRepository userRepository, IChatService chatService) : base(userRepository)
+        public ChatController(
+            IUserRepository userRepository, 
+            IChatService chatService,
+            IUserInfoProvider userInfoProvider) 
+            : base(userRepository, userInfoProvider)
         {
             _chatService = chatService;
         }
