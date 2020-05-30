@@ -9,6 +9,7 @@ namespace IdentityService.Persistence.Interfaces
         List<User> FindUsers(List<long> userIds);
         Task<IReadOnlyCollection<Role>> FindRoles(User user);
         Task Save(User user);
+        Task Update(User user);
 
         long GetUserIdByEmail(string email);
     }

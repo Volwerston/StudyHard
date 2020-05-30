@@ -51,6 +51,21 @@ namespace IdentityService.Persistence.Implementations
 
             return _connection.ExecuteAsync(command);
         }
+        public Task Update(User user)
+        {
+            var queryParameters = new DynamicParameters();
+            queryParameters.Add("@UserId", user.Id);
+            queryParameters.Add("@Name", user.Name);
+            queryParameters.Add("@Gender", user.Gender); 
+            queryParameters.Add("@BirthDate", user.BirthDate);
+
+            var command = new CommandDefinition(
+                "UpdateUser",
+                queryParameters,
+                commandType: CommandType.StoredProcedure);
+
+            return _connection.ExecuteAsync(command);
+        }
 
         public long GetUserIdByEmail(string email)
         {
