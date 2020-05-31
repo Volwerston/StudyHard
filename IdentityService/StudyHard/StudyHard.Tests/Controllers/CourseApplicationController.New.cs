@@ -17,6 +17,7 @@ namespace StudyHard.Tests.Controllers
         private readonly Mock<ICourseApplicationRepository> _courseApplicationRepositoryMock;
         private readonly Mock<IUserRepository> _userRepositoryMock;
         private readonly Mock<IUserInfoProvider> _userInfoProviderMock;
+        private readonly Mock<ITutorRepository> _tutorRepositoryMock;
 
         private readonly CourseApplicationController _courseApplicationController;
 
@@ -24,12 +25,14 @@ namespace StudyHard.Tests.Controllers
         {
             _courseRepositoryMock = new Mock<ICourseRepository>();
             _courseApplicationRepositoryMock = new Mock<ICourseApplicationRepository>();
+            _tutorRepositoryMock = new Mock<ITutorRepository>();
             _userRepositoryMock = new Mock<IUserRepository>();
             _userInfoProviderMock = new Mock<IUserInfoProvider>();
 
             _courseApplicationController = new CourseApplicationController(
                 _courseRepositoryMock.Object,
                 _courseApplicationRepositoryMock.Object,
+                _tutorRepositoryMock.Object,
                 _userRepositoryMock.Object,
                 _userInfoProviderMock.Object);
         }
