@@ -40,9 +40,11 @@ namespace StudyHard.Persistence.Implementations
         {
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
-                return await db.ExecuteAsync(
-                    "INSERT INTO Course (Name, Description, CreatedDate, Active) VALUES (@Name, @Description, @CreatedDate, @Active",
-                    new {course.Name, course.Description, course.CreatedDate, course.Active});
+                return await db.QuerySingleAsync<int>(
+                    @"INSERT INTO Course (Name, Description, CreatedDate, Active, CourseTypeId, CourseApplicationId, CustomerId, TutorId) 
+                                     VALUES (@Name, @Description, @CreatedDate, @Active, @CourseTypeId, @CourseApplicationId, @CustomerId, @TutorId);
+                    SELECT IDENT_CURRENT('dbo.Course');",
+                    course);
             }
         }
 

@@ -10,7 +10,7 @@ namespace StudyHard.Persistence.Interfaces
     {
         Task<List<Course>> GetCourses();
         Task<Course> GetCourseById(int id);
-
         Task<IReadOnlyCollection<CourseType>> GetCourseTypes();
+        Task<int> CreateCourse(Course course);
     }
 }

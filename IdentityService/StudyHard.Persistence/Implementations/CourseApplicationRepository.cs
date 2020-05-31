@@ -65,5 +65,20 @@ namespace StudyHard.Persistence.Implementations
                     });
             }
         }
+
+        public async Task Deactivate(int courseApplicationId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.ExecuteAsync(
+                    @"UPDATE [dbo].[CourseApplication]
+                          SET Active = 0
+                          WHERE Id = @id",
+                    new
+                    {
+                        id = courseApplicationId
+                    });
+            }
+        }
     }
 }

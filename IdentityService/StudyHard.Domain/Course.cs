@@ -9,7 +9,9 @@ namespace StudyHard.Domain
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public bool Active { get; set; }
-
-        public bool CourseType { get; set; }
+        public int CustomerId { get; set; }
+        public int TutorId { get; set; }
+        public int CourseApplicationId { get; set; }
+        public int CourseTypeId { get; set; }
     }
 }

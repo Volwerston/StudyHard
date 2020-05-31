@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Html
+@model StudyHard.Controllers.CourseController.CourseViewModel
+@{
+    ViewData["Title"] = "GetCourseView";
+}
+
+<div style="border: 1px solid lightgrey; margin: 3%; padding: 5%;">
+    <h4 class="text-center">
+        @Model.Course.Name
+        @(Model.Course.Active
+            ? new HtmlString("<span class='badge badge-success'>ACTIVE</span>")
+            : new HtmlString("<span class='badge badge-secondary'>INACTIVE</span>"))
+    </h4>
+    <p><i>@Model.Course.CreatedDate.ToString("D")</i></p>
+    <p>Course type: @Model.CourseType.Type</p>
+    <p>Tutor: @Model.Tutor.Name <@Model.Tutor.Email></p>
+    <p>Student: @Model.Customer.Name <@Model.Customer.Email></p>
+    <div>
+        @(new HtmlString(@Model.Course.Description))
+    </div>
+</div>
