@@ -27,20 +27,31 @@ namespace StudyHard.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            long userId = GetUserId();
-            var user = _userRepository.FindUsers(new List<long> { userId }).FirstOrDefault(); //TODO: add a method for single user, maybe?
-            var roles = (await _userRepository.FindRoles(user)).ToList(); //There should be only one role, ain't it? makes UI a bit more complicated
-            var model = new HomeModel
+            var model = new HomeModel();
+
+            if (User.Identity.IsAuthenticated)
             {
-                BirthDate = user?.BirthDate,
-                Name = user?.Name,
-                Email = user?.Email,
-                Gender = user?.Gender,
-                Roles = roles,
-                UserId = userId
-            };
+                long userId = GetUserId();
+
+                var user = _userRepository.FindUsers(new List<long> { userId }).Single(); 
+
+                var roles = (await _userRepository.FindRoles(user)).ToList();
+                
+                model = new HomeModel
+                {
+                    BirthDate = user.BirthDate,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Gender = user.Gender,
+                    Roles = roles,
+                    UserId = userId
+                };
+            }
+            
             return View(model);
         }
+
+
         [HttpPut]
         public async Task<IActionResult> UpdateUser([FromBody] HomeModel form)
         {

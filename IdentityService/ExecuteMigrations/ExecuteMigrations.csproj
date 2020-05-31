@@ -43,7 +43,7 @@
     <None Update="migrations\0011_Add blog.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="migrations\0012_Add tutorId and customerId to course.sql">
+    <None Update="migrations\0013_Add tutorId and customerId to course.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
