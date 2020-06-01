@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyHard.Domain;
 using StudyHard.Helpers;
+using StudyHard.Models;
 using StudyHard.Persistence.Interfaces;
 
 namespace StudyHard.Controllers
@@ -51,11 +52,9 @@ namespace StudyHard.Controllers
 
         public class CreateCourseApplicationRequest
         {
-            [Required]
-            public string Name { get; set; }
+            [Required] public string Name { get; set; }
 
-            [Required]
-            public string ShortDescription { get; set; }
+            [Required] public string ShortDescription { get; set; }
 
             public int CourseTypeId { get; set; }
         }
@@ -82,7 +81,7 @@ namespace StudyHard.Controllers
 
             if (courseApplication.Active)
             {
-                var tutor = await _tutorRepository.Find((int)currentUserId);
+                var tutor = await _tutorRepository.Find((int) currentUserId);
 
                 if (tutor != null && tutor.Id != courseApplication.UserId)
                 {
@@ -153,7 +152,7 @@ namespace StudyHard.Controllers
             var courseId = await _courseRepository.CreateCourse(course);
             await _courseApplicationRepository.Deactivate(courseApplication.Id);
 
-            return RedirectToAction("GetCourseView", "Course", new { id = courseId });
+            return RedirectToAction("GetCourseView", "Course", new {id = courseId});
         }
 
         [HttpPost]
@@ -177,12 +176,31 @@ namespace StudyHard.Controllers
                 Active = true,
                 CourseType = courseTypes.Single(ct => ct.Id == request.CourseTypeId),
                 CreatedDate = DateTime.UtcNow,
-                UserId = (int)GetUserId()
+                UserId = (int) GetUserId()
             };
 
             var courseApplicationId = await _courseApplicationRepository.Create(courseApplication);
 
-            return RedirectToAction("Index", new { courseApplicationId });
+            return RedirectToAction("Index", new {courseApplicationId});
+        }
+
+        [HttpGet("infos")]
+        public IActionResult GetCourses([FromQuery] string name, [FromQuery] List<int> courseTypes,
+            [FromQuery] int pageNumber, [FromQuery] int pageSize)
+        {
+            return Ok(_courseApplicationRepository.Find(name, courseTypes).Skip(pageSize * (pageNumber - 1)).Take(pageSize));
+        }
+
+        [Authorize]
+        [HttpGet("search")]
+        public ViewResult Search()
+        {
+            var courseTypes = _courseRepository.GetCourseTypes().Result;
+
+            return View(new CASearchViewModel
+            {
+                Skills = courseTypes.ToArray()
+            });
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -38,10 +40,48 @@ namespace StudyHard.Persistence.Implementations
                             ca.CourseType = ct;
                             return ca;
                         },
-                        new { applicationId },
+                        new {applicationId},
                         splitOn: "Id"
                     ))
                     .SingleOrDefault();
+            }
+        }
+
+        public List<CourseApplication> Find(string name, List<int> courseTypes)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                string nameClause = string.IsNullOrEmpty(name)
+                    ? ""
+                    : " AND LOWER(CA.Name) LIKE '%' + @name + '%' ";
+
+                string courseTypesClause = courseTypes.Any()
+                    ? " AND CT.Id in @courseTypes "
+                    : "";
+
+                var whereClause = " WHERE CA.Active = 1 " + nameClause + courseTypesClause;
+
+                return connection.Query<CourseApplication, CourseType, CourseApplication>(
+                    @"SELECT 
+                        	CA.Id, 
+                        	CA.Name, 
+                        	CA.ShortDescription, 
+                        	CA.ApplicantId as UserId, 
+                        	CA.CreatedDate, 
+                        	CA.Active,
+                        	CT.Id,
+                        	CT.Type
+                        FROM [dbo].[CourseApplication] CA 
+                        INNER JOIN [dbo].[CourseType] CT ON CA.CourseTypeId = CT.Id"
+                    + whereClause + " ORDER BY CA.CreatedDate",
+                    (ca, ct) =>
+                    {
+                        ca.CourseType = ct;
+                        return ca;
+                    },
+                    new {name = name, courseTypes = courseTypes},
+                    splitOn: "Id"
+                ).ToList();
             }
         }
 

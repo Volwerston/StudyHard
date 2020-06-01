@@ -1,0 +1,110 @@
+﻿@model CASearchViewModel
+@{
+    ViewData["Title"] = "Applications";
+    string tutorPageBaseUrl = Url.Action("PersonalPage", "Tutor");
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+<div style="margin: auto; margin-top: 5%">
+    <select id="skills" multiple>
+        @foreach (var skill in Model.Skills)
+        {
+            <option skill-id="@skill.Id">@skill.Type</option>
+        }
+    </select>
+    <button type="button" id="search" class="btn btn-light">Search</button>
+
+    <div id="container"></div>
+</div>
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+
+        var pageSize = 10;
+        var pageNumber = 1;
+
+        $(document).ready(function() {
+            GetData();
+
+            $('#skills').selectpicker();
+
+            $("#search").click(function() {
+                $("#container").empty();
+                pageNumber = 1;
+
+                GetData();
+            });
+
+            $(window).scroll(function() {
+                if ($(window).scrollTop() ===
+                    $(document).height() - $(window).height()) {
+                    GetData();
+                }
+            });
+        });
+
+        function GetRowForCA(ca) {
+            let alreadyExists = false;
+            $('[course-app-id=' + ca.id + ']').each(function () { alreadyExists = true; });
+            if (alreadyExists)
+            {
+                return '';
+            }
+
+            messageDate = new Date(ca.createdDate);
+            dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
+            
+            return `<div class="container" style="border: 1px solid lightgrey; margin: 10px; cursor: pointer;">
+                        <div class="row">
+                            <div class="col-9">
+                                <div course-app-id="${ca.id}" onClick="window.location.href='/course/info?courseApplicationId=${ca.id}'">
+                                <h4>${ca.name}</h4>
+                                <p>${dateData[0] + ' | ' + dateData[1]}</p>
+                                <p>${ca.shortDescription}</p>                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>`;
+        }
+
+        function GetData() {   
+            courseTypes = []
+            $('#skills').find(":selected").each(function() {
+                courseTypes.push(parseInt($(this).attr('skill-id')))
+            });            
+            console.log(courseTypes);
+            
+            $.ajax({
+                type: 'GET',
+                url: '/course/infos?' + courseTypes.map(function (x) { return 'courseTypes=' + x; }).join('&'),
+                data: {
+                    "pageNumber": pageNumber,
+                    "pageSize": pageSize
+                },
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                success: function(data) {
+                    if (data != null && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#container").append(GetRowForCA(data[i]));
+                        }
+                        pageNumber++;
+                    }
+
+                    if (pageNumber === 1) {
+                        $("#container").append('<p>No tutors found.</p>');
+                    }
+                },
+                error: function(e) {
+                    alert("Error while retrieving data!");
+                    console.log(JSON.stringify(e));
+                }
+            });
+        }
+    </script>
+}
