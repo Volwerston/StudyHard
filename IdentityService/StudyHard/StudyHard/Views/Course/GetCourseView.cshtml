@@ -2,7 +2,13 @@
 @model StudyHard.Controllers.CourseController.CourseViewModel
 @{
     ViewData["Title"] = "GetCourseView";
+    var url = Url.Action("CreateBlog");
 }
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="~/css/codemirror.min.css">
+<link href="~/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<link href="~/css/froala_style.min.css" rel="stylesheet" type="text/css" />
 
 <div style="border: 1px solid lightgrey; margin: 3%; padding: 5%;">
     <h4 class="text-center">
@@ -18,4 +24,81 @@
     <div>
         @(new HtmlString(@Model.Course.Description))
     </div>
+
+    <br />
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#courseBlog">Course Blog</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#chat">Chat</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane container active" id="courseBlog">
+            <div class="d-flex justify-content-center" style="margin-top: 10px; margin-bottom: 10px">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                    Create course blog
+                </button>
+            </div>
+            
+            @foreach (var blog in Model.CourseBlogs)
+            {
+                <div style="border: 1px solid lightgrey; margin: 3%; padding: 5%;">
+                    <p><i>@blog.CreationDateTimeUtc.ToString("D")</i></p>
+                    <p><i>Author: @blog.AuthorName</i></p>
+                    <div>
+                        @(new HtmlString(@blog.Text))
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="tab-pane container fade" id="chat">...</div>
+    </div>
 </div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@url" method="post">
+                    <input type="hidden" name="authorId" value="@Model.UserId" />
+                    <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                    <div class="form-group">
+                        <textarea name="blogText" required="required" id="comment-text"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/froala_editor.pkgd.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('textarea#comment-text').froalaEditor({
+                toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
+                    '|', 'fontFamily', 'fontSize', 'color', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align',
+                    'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertTable',
+                    '|', 'emoticons', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting',
+                    '|', 'print', 'help', 'html', '|', 'undo', 'redo'],
+                imageUploadParam: 'file',
+                imageUploadURL: '/api/file/froala-image',
+                imageUploadMethod: 'POST',
+                imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                imageEditButtons: ['imageReplace', 'imageAlign', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit',
+                    'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize']
+            });
+        });
+    </script>
+}

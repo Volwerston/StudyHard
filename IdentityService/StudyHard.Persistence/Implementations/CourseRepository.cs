@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StudyHard.Persistence.Implementations
@@ -92,6 +91,31 @@ namespace StudyHard.Persistence.Implementations
             using (IDbConnection db = new SqlConnection(_connectionString))
             {
                 return (await db.QueryAsync<CourseType>("SELECT * FROM CourseType")).ToArray();
+            }
+        }
+
+        public async Task AddCourseBlog(CourseBlog blog)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                await db.ExecuteAsync(@"INSERT INTO [dbo].[CourseBlogs] (CourseId, AuthorId, CreationDateTimeUtc, Text)
+                                     VALUES (@CourseId, @AuthorId, @CreationDateTimeUtc, @Text)",
+                    blog);
+            }
+        }
+
+        public async Task<IReadOnlyCollection<CourseBlog>> GetCourseBlogs(int courseId)
+        {
+            using (IDbConnection db = new SqlConnection(_connectionString))
+            {
+                return (await db.QueryAsync<CourseBlog>(
+                        @"SELECT CB.Id, CB.CourseId, CB.AuthorId, U.Name as AuthorName, CB.CreationDateTimeUtc, CB.Text
+                             FROM [dbo].[CourseBlogs] CB
+                             INNER JOIN [dbo].[User] U
+                             ON CB.AuthorId = U.Id
+                             WHERE CB.CourseId = @courseId",
+                        new { courseId }))
+                    .ToArray();
             }
         }
     }

@@ -1,7 +1,5 @@
 ﻿using StudyHard.Domain;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace StudyHard.Persistence.Interfaces
@@ -12,5 +10,7 @@ namespace StudyHard.Persistence.Interfaces
         Task<Course> GetCourseById(int id);
         Task<IReadOnlyCollection<CourseType>> GetCourseTypes();
         Task<int> CreateCourse(Course course);
+        Task AddCourseBlog(CourseBlog blog);
+        Task<IReadOnlyCollection<CourseBlog>> GetCourseBlogs(int courseId);
     }
 }
