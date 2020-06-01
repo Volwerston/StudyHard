@@ -1,0 +1,9 @@
+﻿IF OBJECT_ID('dbo.CourseBlogs', 'U') IS NULL 
+BEGIN 
+	CREATE TABLE [dbo].[CourseBlogs](
+		Id INT IDENTITY(1,1) PRIMARY KEY,
+		AuthorId INT NOT NULL FOREIGN KEY REFERENCES [dbo].[User](Id),
+		CreationDateTimeUtc DATETIME2 NOT NULL,
+		Text NVARCHAR(4000) NOT NULL)
+END
+GO

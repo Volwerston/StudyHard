@@ -49,6 +49,9 @@
     <None Update="migrations\0013_Add tutorId and customerId to course.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="migrations\0014_Add course blog.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
