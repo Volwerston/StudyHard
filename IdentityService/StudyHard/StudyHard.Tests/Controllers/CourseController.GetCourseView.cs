@@ -134,6 +134,11 @@ namespace StudyHard.Tests.Controllers
                 })
                 .Verifiable();
 
+            _courseRepositoryMock
+                .Setup(_ => _.GetCourseBlogs(It.IsAny<int>()))
+                .ReturnsAsync(Array.Empty<CourseBlog>())
+                .Verifiable();
+
             // When
             var response = await _courseController.GetCourseView(course.Id);
 
