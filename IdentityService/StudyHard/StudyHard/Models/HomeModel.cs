@@ -1,4 +1,5 @@
 ﻿using IdentityService.Domain;
+using StudyHard.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace StudyHard.Models
         public string Email { get; set; }
         public string Name { get; set; }
         public List<Role> Roles { get; set; }
-        public long? Gender { get; set; }
+        public Gender? Gender { get; set; }
         public DateTime? BirthDate { get; set; }
         //TODO: add Interests, upload photo
 

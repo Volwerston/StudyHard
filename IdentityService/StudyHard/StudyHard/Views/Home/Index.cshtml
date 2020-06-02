@@ -1,7 +1,9 @@
-﻿@{
+﻿@using StudyHard.Domain
+
+@{
     ViewData["Title"] = "Home Page";
 }
-
+@model HomeModel
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
 </div>
@@ -9,9 +11,62 @@
 
 @if (User.Identity.IsAuthenticated)
 {
+<div class="col-md-4 offset-md-4">
+    <form action="@Url.Action("UpdateBio", "Home")" class="container" method="post">
+        @Html.HiddenFor(x => x.UserId)
+        <table class="col-md-6" id="bio-table">
+            <thead>
+            <th class="col-md-2"></th>
+            <th class="col-md-4"></th>
+            </thead>
+            <tbody>
+                <tr class="form-group">
+                    <td>
+                        <label> Email:</label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Email, null, new { disabled = "disabled" })
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td>
+                        <label> Name:</label>
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => x.Name)
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td>
+                        <label> Gender:</label>
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(x => x.Gender, new SelectList(Enum.GetValues(typeof(Gender))), "Select Gender", new { @class = "form-control", Style = "display:inline;" })
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <td>
+                        <label> Birth Date:</label>
+                    </td>
+                    <td>
+                        @Html.EditorFor(x => x.BirthDate)
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center" style="margin-bottom:5px;">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </form>
     <div class="d-flex justify-content-center">
         <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("New", "CourseApplication")'">
             Create course application
         </button>
     </div>
+</div>
+<style>
+    #bio-table td{
+        padding-bottom:5px;
+    }
+</style>
 }

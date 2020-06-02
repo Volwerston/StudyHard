@@ -56,7 +56,7 @@ namespace IdentityService.Persistence.Implementations
             var queryParameters = new DynamicParameters();
             queryParameters.Add("@UserId", user.Id);
             queryParameters.Add("@Name", user.Name);
-            queryParameters.Add("@Gender", user.Gender); 
+            queryParameters.Add("@Gender", (int) user.Gender); 
             queryParameters.Add("@BirthDate", user.BirthDate);
 
             var command = new CommandDefinition(

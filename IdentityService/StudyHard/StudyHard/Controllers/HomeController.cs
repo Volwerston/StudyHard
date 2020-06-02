@@ -52,8 +52,8 @@ namespace StudyHard.Controllers
         }
 
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUser([FromBody] HomeModel form)
+        [HttpPost]
+        public async Task<IActionResult> UpdateBio([FromForm] HomeModel form)
         {
             if (ModelState.IsValid)
             {
