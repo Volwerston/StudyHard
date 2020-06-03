@@ -2,7 +2,16 @@
 
 namespace IdentityService.Infrastructure.Configuration
 {
-    public class Settings
+    public interface ISettings
+    {
+        ClientCredentials GoogleCredentials { get; }
+        string GoogleServiceUrl { get; }
+        string GooglePostLoginRedirectUri { get; }
+        string SymmetricSigninKey { get; }
+        string DbConnectionString { get; }
+    }
+
+    public class Settings : ISettings
     {
         private readonly IConfiguration _configuration;
 

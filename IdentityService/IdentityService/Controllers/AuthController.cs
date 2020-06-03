@@ -12,6 +12,7 @@ using System.Linq;
 using IdentityService.Domain;
 using IdentityService.Persistence.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using IdentityService.Helpers;
 using Microsoft.IdentityModel.Tokens;
 
 namespace IdentityService.Controllers
@@ -19,15 +20,21 @@ namespace IdentityService.Controllers
     [Route("auth")]
     public class AuthController : Controller
     {
-        private readonly Settings _settings;
+        private readonly ISettings _settings;
         private readonly IUserRepository _userRepository;
-        private readonly GoogleClient.GoogleClient _googleClient;
+        private readonly GoogleClient.IGoogleClient _googleClient;
+        private readonly IGoogleSignatureValidator _validator;
 
-        public AuthController(Settings settings, IUserRepository userRepository, GoogleClient.GoogleClient googleClient)
+        public AuthController(
+            ISettings settings, 
+            IUserRepository userRepository, 
+            GoogleClient.IGoogleClient googleClient,
+            IGoogleSignatureValidator validator)
         {
             _settings = settings;
             _userRepository = userRepository;
             _googleClient = googleClient;
+            _validator = validator;
         }
 
         public class AuthRequestModel
@@ -40,7 +47,7 @@ namespace IdentityService.Controllers
         public IActionResult Index([FromQuery] AuthRequestModel model)
         {
             var googleCredentials = _settings.GoogleCredentials;
-
+            
             return View(new AuthViewModel
             {
                 State = model.RedirectUri.ToBase64(),
@@ -71,7 +78,7 @@ namespace IdentityService.Controllers
                     RedirectUri = _settings.GooglePostLoginRedirectUri
                 });
 
-            var payload = await GoogleJsonWebSignature.ValidateAsync(
+            var payload = await _validator.Validate(
                 challengeResponse.Value.AccessToken,
                 new GoogleJsonWebSignature.ValidationSettings());
 

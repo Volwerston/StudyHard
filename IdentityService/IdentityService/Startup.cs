@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 using GoogleClient;
+using IdentityService.Helpers;
 using IdentityService.Infrastructure;
 using IdentityService.Infrastructure.Configuration;
 using IdentityService.Persistence.Implementations;
@@ -36,14 +37,15 @@ namespace IdentityService
             services.AddMvc(option => option.EnableEndpointRouting = false);
 
             var dbConnection = new SqlConnection(Settings.DbConnectionString);
-            services.AddSingleton(Settings);
+            services.AddSingleton<ISettings>(Settings);
             services.AddSingleton<IDbConnection>(sp => new SqlConnection(Settings.DbConnectionString));
             services.AddSingleton<IUserRepository, UserRepository>(provider =>
                 new UserRepository(dbConnection, Settings.DbConnectionString));
-            services.AddSingleton(new GoogleClient.GoogleClient(new GoogleSettings
+            services.AddSingleton<IGoogleClient>(new GoogleClient.GoogleClient(new GoogleSettings
             {
                 ServiceUrl = Settings.GoogleServiceUrl
             }));
+            services.AddSingleton<IGoogleSignatureValidator, GoogleSignatureValidator>();
         }
 
         public void Configure(IApplicationBuilder app)

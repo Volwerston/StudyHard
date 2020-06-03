@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\GoogleClient\GoogleClient.csproj" />
+    <ProjectReference Include="..\..\IdentityService\IdentityService.csproj" />
     <ProjectReference Include="..\..\StudyHard.Persistence\StudyHard.Persistence.csproj" />
     <ProjectReference Include="..\StudyHard\StudyHard.csproj" />
   </ItemGroup>

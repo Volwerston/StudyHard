@@ -13,7 +13,12 @@ namespace GoogleClient
         public string ServiceUrl { get; set; }
     }
 
-    public class GoogleClient : IDisposable
+    public interface IGoogleClient
+    {
+        Task<Result<GoogleClient.ChallengeResponse>> Challenge(GoogleClient.ChallengeRequest request);
+    }
+
+    public class GoogleClient : IGoogleClient, IDisposable
     {
         private readonly HttpClient _httpClient;
         private readonly GoogleSettings _settings;
