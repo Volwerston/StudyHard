@@ -117,13 +117,14 @@
       float: right;
       width: 46%;
     }
-    .input_msg_write input {
+    .input_msg_write textarea {
       background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
       border: medium none;
       color: #4c4c4c;
       font-size: 15px;
-      min-height: 48px;
       width: 100%;
+      height: 100px;
+      resize: none;
     }
     
     .type_msg {border-top: 1px solid #c4c4c4;position: relative;}
@@ -142,8 +143,10 @@
     }
     .messaging { padding: 0 0 50px 0;}
     .msg_history {
-      height: 516px;
-      overflow-y: scroll;
+      height: 450px;
+      overflow: auto;
+      /*display: flex;*/
+      /*flex-direction: column-reverse;*/
     }
 </style>
 
@@ -209,7 +212,7 @@
                 </div>
                 <div class="type_msg">
                     <div class="input_msg_write">
-                        <input type="text" class="write_msg" id="write_msg_inp" placeholder="Type a message"/>
+                        <textarea class="write_msg" id="write_msg_inp" placeholder="Type a message"></textarea>
                         <button class="msg_send_btn" type="button" onclick="onSendMessage()">
                             <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
                         </button>
@@ -218,29 +221,24 @@
             </div>
         </div>
 
-
-        <p class="text-center top_spac"> Design by <a target="_blank" href="#">Sunil Rajput</a></p>
-
     </div>
 </div>
 </body>
 </html>
 
 @section Scripts {
-    	<script>
-            let selectedChatId = @(Model.SelectedChatId)
-            let userId = @(Model.UserId)
+    <script>
+            let selectedChatId = @(Model.SelectedChatId);
+            let userId = @(Model.UserId);
             
             function scrollToBottom() {
-              let messages = $('#msg_history');
-              messages.scrollTop = messages.scrollHeight;
+              let msgsDiv = document.getElementById('msg_history');
+              msgsDiv.scrollTop = msgsDiv.scrollHeight;
             }
             
-            scrollToBottom();
             $(document).ready(function() {
-                loadMessagesForChat(selectedChatId)     
-                    
-                scrollToBottom();
+                loadMessagesForChat(selectedChatId, scrollToBottom);
+                
                 setInterval(function() {
                     loadMessagesForChat(selectedChatId);
                     updateChats();
@@ -251,11 +249,10 @@
                 // Get selected chat id
                 let newSelectedChatId = parseInt($(e).attr('prop-chat-id'));
                 
-                if (selectedChatId == newSelectedChatId)
+                if (newSelectedChatId === selectedChatId)
                 {
                     return;
-                }
-                
+                }                
                 selectedChatId = newSelectedChatId;
                 
                 clearMessageField();
@@ -264,18 +261,17 @@
                 $('.active_chat').removeClass('active_chat');
                 $(e).children().addClass('active_chat');
                 
-                loadMessagesForChat(selectedChatId);
-                scrollToBottom();
+                loadMessagesForChat(selectedChatId, scrollToBottom);
             }
             
             function appendMessage(message) {
                 messageDate = new Date(message.sendTime);
                 dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
                 
-                if (message.senderId == userId) {
-                    $('#msg_history').append(formOutcomingMessage(message.content, dateData[1], dateData[0]))
+                if (message.senderId === userId) {
+                    $('#msg_history').append(formOutcomingMessage(message.content, dateData[1], dateData[0]));
                 } else {
-                    $('#msg_history').append(formIncomingMessage(message.content, dateData[1], dateData[0]))
+                    $('#msg_history').append(formIncomingMessage(message.content, dateData[1], dateData[0]));
                 }              
             }
             
@@ -285,8 +281,15 @@
                 messages.forEach(appendMessage);
             }            
            
-            function loadMessagesForChat(chatId) {
-                if (selectedChatId == -1) {       
+            function loadMessagesForChat(chatId, action) {
+                if (!action)
+                {
+                    action = function() {
+                      
+                    }
+                }
+                
+                if (selectedChatId === -1) {       
                     return;
                 }
                 
@@ -295,6 +298,7 @@
                         url: "/api/chat/" + chatId + "/messages",
                         success: messages => {
                             refillMessages(messages);
+                            action();
                         },
                         error: resp => {
                             console.log(resp);
@@ -304,25 +308,27 @@
             }
             
             function onSendMessage() {
-              sendMessage(selectedChatId);
-            }
-            
-            function sendMessage(chatId) {
                 let content = $('#write_msg_inp').val();
+                
+                if (!content.trim())
+                {
+                    return;
+                }
                 
                 let requestData = {
                     content: content,
-                    chatId: chatId
+                    chatId: selectedChatId
                 };
                 
                 $.ajax({
                         type: 'POST',
-                        url: "/api/chat/" + chatId + "/messages",
+                        url: "/api/chat/" + selectedChatId + "/messages",
      					contentType: "application/json",
      					data: JSON.stringify(requestData),
                         success: message => {
                             clearMessageField();
                             appendMessage(message);
+                            scrollToBottom();
                             updateCollocutors(message);
                         },
                         error: resp => {
@@ -350,190 +356,79 @@
                 );    
             }
             
+            function formatMessageDate(date) {
+                messageDate = new Date(date);
+                return messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');              
+            }
+            
             function updateChatData(chatData) {
                 $('#inbox_chat').empty();
                 chatData.forEach(function(chatInfo) {
-                    messageDate = new Date(chatInfo.lastMessageTime);
-                    dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
+                    dateData = formatMessageDate(chatInfo.lastMessageTime);
                     $('#inbox_chat').append(formCollocutorData(chatInfo.chatId, chatInfo.collocutorId, chatInfo.collocutorName, chatInfo.lastMessage, dateData[0]));
                 });
-            }
-          
+            }      
             
             function updateCollocutors(message) {
                 let collocutorElem = $('div[prop-chat-id="' + selectedChatId + '"]');
                 
-                collocutorId = collocutorElem.attr('prop-chat-collocutor-id')
-                collocutorName = collocutorElem.attr('prop-chat-collocutor-name')
+                collocutorId = collocutorElem.attr('prop-chat-collocutor-id');
+                collocutorName = collocutorElem.attr('prop-chat-collocutor-name');
               
+                dateData = formatMessageDate(message.sendTime);
                 messageDate = new Date(message.sendTime);
-                dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
                 
                 collocutorElem.remove();
                 $('#inbox_chat').prepend(formCollocutorData(selectedChatId, collocutorId, collocutorName, message.content, dateData[0]));
             }
             
             function formCollocutorData(chatId, collocutorId, collocutorName, message, date) {
-              return `
-                        <div prop-chat-id="` + chatId + `" prop-chat-collocutor-id="` + collocutorId + `" prop-chat-collocutor-name="` + collocutorName + `"
+              return `<div prop-chat-id="` + chatId + `" prop-chat-collocutor-id="` + collocutorId + `" prop-chat-collocutor-name="${collocutorName}"
                              onclick="onChatSelected(this)">
                             <div class="chat_list ${chatId === selectedChatId ? 'active_chat' : ''}">
                                 <div class="chat_people">
                                     <div class="chat_img">
-                                        <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                                        <img src="https://ptetutorials.com/images/user-profile.png">
                                     </div>
                                     <div class="chat_ib">
                                         <h5>
-                                            ` + collocutorName + ` <span class="chat_date">` + date + `</span>
+                                            ${collocutorName} <span class="chat_date">${date}</span>
                                         </h5>
                                         <p>
-                                            ` + message +`
+                                            ${message}
                                         </p>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        `
+                        </div>`
             }
                 
             
             function formIncomingMessage(content, time, date) {
-              return `
-                                  <div class="incoming_msg">
+              return `<div class="incoming_msg">
                                       <div class="incoming_msg_img">
                                           <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
                                       </div>
                                       <div class="received_msg">
                                           <div class="received_withd_msg">
                                               <p>
-                                                  ` + content + `
+                                                  ${content}
                                               </p>
-                                              <span class="time_date">` + (time + " | " + date) + `</span>
+                                              <span class="time_date">${time + " | " + date}</span>
                                           </div>
                                       </div>
-                                  </div>
-              `
+                                  </div>`
             }
             
             function formOutcomingMessage(content, time, date) {
-              return `
-                                  
-                    <div class="outgoing_msg">
+              return `<div class="outgoing_msg">
                         <div class="sent_msg">
                             <p>
-                                ` + content + `
+                                ${content}
                             </p>
-                            <span class="time_date"> ` + time + '|' + date + ` </span>
+                            <span class="time_date">${time + '|' + date}</span>
                         </div>
-                    </div>
-              `
+                    </div>`
             }
-            
-    		// function parentCommentView(comment) {
-    		// 	return `<div class="row" id="${`comment_${comment.id}`}">
-    		// 			<div class="col-md-2">
-    		// 				<img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img-fluid rounded center" class="img-fluid rounded center"/>
-    		// 				<p class="text-secondary text-center">${comment.creationDate}</p>
-    		// 			</div>
-    		// 			<div class="col-md-10">
-    		// 				<p><strong>${comment.author.userName + " " + comment.author.surname}</strong></p>
-    		// 				<p>${comment.text}<p>
-    		// 					<button class="float-right btn btn-outline-primary ml-2" onclick="addreplyComment(${comment.id
-    		// 		})" ${currentUserName == null ? 'disabled="disable"' : ''}>  <i class="fa fa-reply">
-    		// 					</i> Reply</button>
-    		// 					${currentUserName == comment.author.userName
-    		// 		? '<a class="float-right btn text-white btn-danger" onclick="deleteComment(' + comment.id + ')">Delete</a>'
-    		// 		: ''}
-    		// 				</p>
-    		// 			</div>
-    		// 		</div>`;
-    		// }
     	</script>
-    @* *@
-    @* 	<script> *@
-    @* 		function loadComments() { *@
-    @* 			$.ajax({ *@
-    @* 					type: 'GET', *@
-    @* 					url: "/api/post/comments/" + @Model.Id, *@
-    @* 					success: comments => { *@
-    @* 						let commentsView = buildCommentsTree(comments); *@
-    @* 						document.getElementById("topCommentContainer").innerHTML = commentsView; *@
-    @* 					}, *@
-    @* 					error: resp => { *@
-    @* 						document.getElementById("allValidation").innerHTML = "Failed to rate film"; *@
-    @* 					} *@
-    @* 				} *@
-    @* 			); *@
-    @* 		} *@
-    @* 		loadComments(); *@
-    @* 		function addreplyComment(commentId) { *@
-    @* 			$('#comment_0').remove(); *@
-    @* 			let replyComment = createreplyComment(commentId); *@
-    @* 			$(replyComment.innerHTML).insertAfter(`#comment_${commentId}`); *@
-    @* 		} *@
-    @* 		function replyToComment(commentId, isReply) { *@
-    @* 			let requestData = { *@
-    @* 				blogId: @Model.Id, *@
-    @* 				parentId: commentId, *@
-    @* 				text: isReply ? document.getElementById("comment_0_text").value : document.getElementById("comment_00_text").value *@
-    @* 			}; *@
-    @* 			$.ajax({ *@
-    @* 					type: 'POST', *@
-    @* 					url: "/api/post/comments", *@
-    @* 					contentType: "application/json", *@
-    @* 					data: JSON.stringify(requestData), *@
-    @* 					success: data => { *@
-    @* 						window.location.href = "/userblog/blogview/" + @Model.Id; *@
-    @* 					}, *@
-    @* 					error: resp => { *@
-    @* 						//TODO add some error handling *@
-    @* 					} *@
-    @* 				} *@
-    @* 			); *@
-    @* 		} *@
-    @* 		function deleteComment(commentId) { *@
-    @* 			$.ajax({ *@
-    @* 					type: 'DELETE', *@
-    @* 					url: "/api/post/comments/" + commentId, *@
-    @* 					success: data => { *@
-    @* 						window.location.href = "/userblog/blogview/" + @Model.Id; *@
-    @* 					}, *@
-    @* 					error: resp => { *@
-    @* 						//TODO add some error handling *@
-    @* 					} *@
-    @* 				} *@
-    @* 			); *@
-    @* 		} *@
-    @* 		//building comment tree *@
-    @* 		function buildCommentsTree(comments) { *@
-    @* 			let content = `<div class="card-body">`; *@
-    @* 			for (let i = 0; i < comments.length; ++i) { *@
-    @* 				let comment = comments[i]; *@
-    @* 				content = content + buildCommentTree(comment); *@
-    @* 			} *@
-    @* 			return content + `</div>`; *@
-    @* 		} *@
-    @* 		function buildCommentTree(comment) { *@
-    @* 			let content = parentCommentView(comment); *@
-    @* 			let childCommentsView = buildCommentsTree(comment.subComments); *@
-    @* 			return `${content}<div class="card card-inner">${childCommentsView}</div>`; *@
-    @* 		} *@
-    @* 		//building reply form *@
-    @* 		function createreplyComment(commentId) { *@
-    @* 			var div = document.createElement('div'); *@
-    @* 			var userName = "@User.Identity.Name"; *@
-    @* 			div.innerHTML = `<div class="card card-inner" id="comment_0"><div class="row" > *@
-    @* 					<div class="col-md-2"> *@
-    @* 						<img src="https://image.ibb.co/jw55Ex/def_face.jpg" class="img-fluid rounded center"/> *@
-    @* 					</div> *@
-    @* 					<div class="col-md-10"> *@
-    @* 						<p><a href="https://maniruzzaman-akash.blogspot.com/p/contact.html"><strong>${userName}</strong></a></p> *@
-    @* 						<textarea id="comment_0_text" style="width: 100%; height: 100%" rows="7"></textarea> *@
-    @* 						<button class="float-right btn btn-outline-primary ml-2" onclick="replyToComment(${commentId *@
-    @* 				}, true)">Add</button> *@
-    @* 					</div> *@
-    @* 				</div></div>`; *@
-    @* 			return div; *@
-    @* 		} *@
-    @* 	</script> *@
 }
