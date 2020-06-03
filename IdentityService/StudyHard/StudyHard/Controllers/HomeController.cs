@@ -16,16 +16,14 @@ namespace StudyHard.Controllers
     [AllowAnonymous]
     public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IUserRepository _userRepository;
         private readonly ICourseApplicationRepository _courseApplicationRepository;
         private readonly ICourseRepository _courseRepository;
-        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IUserInfoProvider userInfoProvider
+        public HomeController(IUserRepository userRepository, IUserInfoProvider userInfoProvider
             , ICourseApplicationRepository courseApplicationRepository, ICourseRepository courseRepository
             )
             : base(userRepository, userInfoProvider)
         {
-            _logger = logger;
             _userRepository = userRepository;
             _courseApplicationRepository = courseApplicationRepository;
             _courseRepository = courseRepository;
@@ -36,7 +34,7 @@ namespace StudyHard.Controllers
         {
             var model = new HomeModel();
 
-            if (User.Identity.IsAuthenticated)
+            if (UserInfoProvider.IsAuthenticated(User))
             {
                 long userId = GetUserId();
 

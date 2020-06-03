@@ -7,15 +7,15 @@ namespace StudyHard.Controllers
     public class BaseController: Controller
     {
         protected readonly IUserRepository UserRepository;
-        private readonly IUserInfoProvider _userInfoProvider;
+        protected readonly IUserInfoProvider UserInfoProvider;
 
         public BaseController(IUserRepository userRepository, IUserInfoProvider userInfoProvider)
         {
             UserRepository = userRepository;
-            _userInfoProvider = userInfoProvider;
+            UserInfoProvider = userInfoProvider;
         }
 
         public long GetUserId() => UserRepository.GetUserIdByEmail(
-            _userInfoProvider.GetUserEmail(User));
+            UserInfoProvider.GetUserEmail(User));
     }
 }
