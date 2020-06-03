@@ -104,7 +104,6 @@ namespace StudyHard.Tests.Controllers
         public void ReturnNewMessageId()
         {
             // Given 
-            int chatId = 1;
             var sendMessageRequest = new SendMessageRequest
             {
                 ChatId = 1,
