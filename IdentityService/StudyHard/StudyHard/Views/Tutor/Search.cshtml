@@ -56,8 +56,13 @@
                                 <p>${tutor.email}</p>
                                 <p>Courses: ${tutor.skills.map(s => s.type).join()}</p>                                
                                 </div>
-                            <p><button type="button" tutor-id="${tutor.id}" class="btn btn-success" onclick="chatWith(this)">Chat</button></p>
-                            </div>
+                                    <p>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <button type="button" tutor-id="${tutor.id}" class="btn btn-success" onclick="chatWith(this)">Chat</button>
+                                        }
+                                    </p>
+                                </div>
                         </div>
                     </div>`;
         }

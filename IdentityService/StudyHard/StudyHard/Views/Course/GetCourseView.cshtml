@@ -54,7 +54,13 @@
                 </div>
             }
         </div>
-        <div class="tab-pane container fade" id="chat">...</div>
+        <div class="tab-pane container fade" id="chat">
+            <div class="d-flex justify-content-center" style="margin-top: 10px; margin-bottom: 10px">
+                <button type="button" class="btn btn-primary" onclick="chatWith(this)" tutor-id="@Model.Course.TutorId">
+                    Chat
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -84,7 +90,23 @@
 
 @section Scripts {
     <script type="text/javascript" src="~/js/froala_editor.pkgd.min.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript">      
+        function chatWith(tutorDiv) {
+            tutorId = parseInt($(tutorDiv).attr('tutor-id'));
+            $.ajax({
+                    type: 'GET',
+                    url: "/api/chat/with/" + tutorId,
+                    success: chatData => {
+                        window.location.href=`/Chat/ChatView?chatId=${chatData.chatId}`
+                    },
+                    error: resp => {
+                        console.log(resp);
+                    }
+                }
+            );
+        }
+    
+    
         $(document).ready(function () {
             $('textarea#comment-text').froalaEditor({
                 toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript',
