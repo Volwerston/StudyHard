@@ -190,7 +190,7 @@ namespace StudyHard.Controllers
         {
             return Ok(_courseApplicationRepository.Search(GetUserId(), name, courseTypes)
                 .Skip(pageSize * (pageNumber - 1))
-                .Take(pageSize));
+                .Take(pageSize).ToList());
         }
 
         [Authorize]
