@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using StudyHard.Helpers;
 using StudyHard.Models;
+using StudyHard.Persistence.Interfaces;
 
 namespace StudyHard.Controllers
 {
@@ -17,11 +18,17 @@ namespace StudyHard.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUserRepository _userRepository;
-        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IUserInfoProvider userInfoProvider)
+        private readonly ICourseApplicationRepository _courseApplicationRepository;
+        private readonly ICourseRepository _courseRepository;
+        public HomeController(ILogger<HomeController> logger, IUserRepository userRepository, IUserInfoProvider userInfoProvider
+            , ICourseApplicationRepository courseApplicationRepository, ICourseRepository courseRepository
+            )
             : base(userRepository, userInfoProvider)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _courseApplicationRepository = courseApplicationRepository;
+            _courseRepository = courseRepository;
         }
 
         [HttpGet]
@@ -36,7 +43,7 @@ namespace StudyHard.Controllers
                 var user = _userRepository.FindUsers(new List<long> { userId }).Single(); 
 
                 var roles = (await _userRepository.FindRoles(user)).ToList();
-                
+
                 model = new HomeModel
                 {
                     BirthDate = user.BirthDate,
@@ -44,7 +51,10 @@ namespace StudyHard.Controllers
                     Email = user.Email,
                     Gender = user.Gender,
                     Roles = roles,
-                    UserId = userId
+                    UserId = userId,
+                    CourseApplications = await _courseApplicationRepository.GetCourseApplicationsForUser(userId),
+                    CoursesAsCustomer = await _courseRepository.GetCoursesAsCustomer(userId),
+                    CoursesAsTutor = await _courseRepository.GetCoursesAsTutor(userId)
                 };
             }
             

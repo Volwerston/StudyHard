@@ -16,6 +16,8 @@ namespace StudyHard.Models
         public Gender? Gender { get; set; }
         public DateTime? BirthDate { get; set; }
         //TODO: add Interests, upload photo
-
+        public List<CourseApplication> CourseApplications { get; set; }
+        public List<Course> CoursesAsTutor { get; set; }
+        public List<Course> CoursesAsCustomer { get; set; }
     }
 }

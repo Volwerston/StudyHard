@@ -26,6 +26,65 @@ namespace StudyHard.Persistence.Implementations
                 return (await db.QueryAsync<Course>("SELECT * FROM Course")).ToList();
             }
         }
+        public async Task<List<Course>> GetCoursesAsTutor(long userId)
+        {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    return connection.Query<Course, CourseType, Course>(
+                       @"SELECT 
+                        	C.Id, 
+                        	C.Name, 
+                        	C.Description, 
+                        	C.CustomerId, 
+							C.TutorId, 
+                        	C.CreatedDate, 
+                        	C.Active,
+                        	CT.Id,
+                        	CT.Type
+                        FROM [dbo].Course C
+                        INNER JOIN [dbo].[CourseType] CT ON C.CourseTypeId = CT.Id
+                        WHERE C.TutorId = @userId
+                        ORDER BY C.CreatedDate",
+                       (c, ct) =>
+                       {
+                           c.CourseType = ct;
+                           return c;
+                       },
+                       new { userId },
+                       splitOn: "Id"
+                   ).ToList();
+                }
+        }
+
+        public async Task<List<Course>> GetCoursesAsCustomer(long userId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return connection.Query<Course, CourseType, Course>(
+                   @"SELECT 
+                        	C.Id, 
+                        	C.Name, 
+                        	C.Description, 
+                        	C.CustomerId, 
+							C.TutorId, 
+                        	C.CreatedDate, 
+                        	C.Active,
+                        	CT.Id,
+                        	CT.Type
+                        FROM [dbo].Course C
+                        INNER JOIN [dbo].[CourseType] CT ON C.CourseTypeId = CT.Id
+                        WHERE C.CustomerId = @userId
+                        ORDER BY C.CreatedDate",
+                   (c, ct) =>
+                   {
+                       c.CourseType = ct;
+                       return c;
+                   },
+                   new { userId },
+                   splitOn: "Id"
+               ).ToList();
+            }
+        }
 
         public async Task<Course> GetCourseById(int id)
         {

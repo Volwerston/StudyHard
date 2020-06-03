@@ -11,62 +11,198 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-<div class="col-md-4 offset-md-4">
-    <form action="@Url.Action("UpdateBio", "Home")" class="container" method="post">
-        @Html.HiddenFor(x => x.UserId)
-        <table class="col-md-6" id="bio-table">
-            <thead>
-            <th class="col-md-2"></th>
-            <th class="col-md-4"></th>
-            </thead>
-            <tbody>
-                <tr class="form-group">
-                    <td>
-                        <label> Email:</label>
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(x => x.Email, null, new { disabled = "disabled" })
-                    </td>
-                </tr>
-                <tr class="form-group">
-                    <td>
-                        <label> Name:</label>
-                    </td>
-                    <td>
-                        @Html.TextBoxFor(x => x.Name)
-                    </td>
-                </tr>
-                <tr class="form-group">
-                    <td>
-                        <label> Gender:</label>
-                    </td>
-                    <td>
-                        @Html.DropDownListFor(x => x.Gender, new SelectList(Enum.GetValues(typeof(Gender))), "Select Gender", new { @class = "form-control", Style = "display:inline;" })
-                    </td>
-                </tr>
-                <tr class="form-group">
-                    <td>
-                        <label> Birth Date:</label>
-                    </td>
-                    <td>
-                        @Html.EditorFor(x => x.BirthDate)
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-center" style="margin-bottom:5px;">
-            <button type="submit" class="btn btn-primary">Save</button>
+<div class="container row">
+    <div class="col-md-4">
+        <form action="@Url.Action("UpdateBio", "Home")" class="container" method="post">
+            @Html.HiddenFor(x => x.UserId)
+            <table class="col-md-6" id="bio-table">
+                <thead>
+                <th class="col-md-2"></th>
+                <th class="col-md-4"></th>
+                </thead>
+                <tbody>
+                    <tr class="form-group">
+                        <td>
+                            <label> Email:</label>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(x => x.Email, null, new { disabled = "disabled" })
+                        </td>
+                    </tr>
+                    <tr class="form-group">
+                        <td>
+                            <label> Name:</label>
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(x => x.Name)
+                        </td>
+                    </tr>
+                    <tr class="form-group">
+                        <td>
+                            <label> Gender:</label>
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(x => x.Gender, new SelectList(Enum.GetValues(typeof(Gender))), "Select Gender", new { @class = "form-control", Style = "display:inline;" })
+                        </td>
+                    </tr>
+                    <tr class="form-group">
+                        <td>
+                            <label> Birth Date:</label>
+                        </td>
+                        <td>
+                            @Html.EditorFor(x => x.BirthDate)
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" style="margin-bottom:5px;">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+        <div class="d-flex justify-content-center">
+            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("New", "CourseApplication")'">
+                Create course application
+            </button>
         </div>
-    </form>
-    <div class="d-flex justify-content-center">
-        <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("New", "CourseApplication")'">
-            Create course application
-        </button>
+    </div>
+    <div class="col-md-8">
+        <div class="accordion" id="acco">
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tab1" aria-expanded="true" aria-controls="tab1">
+                            Course Applications
+                        </button>
+                    </h2>
+                </div>
+                <div id="tab1" class="collapse show" aria-labelledby="headingOne" data-parent="#acco">
+                    <div class="card-body">
+                        @if (Model.CourseApplications != null && Model.CourseApplications.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Short Description</th>
+                                        <th>Created Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var courseApp in Model.CourseApplications)
+                                    {
+                                        <tr class="@(courseApp.Active ? "" : "grey-back")" onclick="location.href = '@Url.Action("Index","CourseApplication", new {courseApplicationId = courseApp.Id })'" style="cursor:pointer;">
+                                            <td>@courseApp.Name</td>
+                                            <td>@Html.Raw(@courseApp.ShortDescription)</td>
+                                            <td>@courseApp.CreatedDate</td>
+                                            <td>@courseApp.CourseType.Type</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                        else{
+                            <h3>No course applications found.</h3>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tab2" aria-expanded="true" aria-controls="tab2">
+                            Courses (Tutor)
+                        </button>
+                    </h2>
+                </div>
+                <div id="tab2" class="collapse" aria-labelledby="headingOne" data-parent="#acco">
+                    <div class="card-body">
+                        @if (Model.CoursesAsTutor != null && Model.CoursesAsTutor.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Created Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var courseApp in Model.CoursesAsTutor)
+                                    {
+                                        <tr class="@(courseApp.Active ? "" : "grey-back")" onclick="location.href = '@Url.Action("GetCourseView","Course", new {id = courseApp.Id })'" style="cursor:pointer;">
+                                            <td>@courseApp.Name</td>
+                                            <td>@Html.Raw(@courseApp.Description)</td>
+                                            <td>@courseApp.CreatedDate</td>
+                                            <td>@courseApp.CourseType.Type</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <h3>No courses as tutor found.</h3>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#tab3" aria-expanded="true" aria-controls="tab3">
+                            Courses (Student)
+                        </button>
+                    </h2>
+                </div>
+                <div id="tab3" class="collapse" aria-labelledby="headingOne" data-parent="#acco">
+                    <div class="card-body">
+                        @if (Model.CoursesAsCustomer != null && Model.CoursesAsCustomer.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Created Date</th>
+                                        <th>Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var courseApp in Model.CoursesAsCustomer)
+                                    {
+                                        <tr class="@(courseApp.Active ? "" : "grey-back")" onclick="location.href = '@Url.Action("GetCourseView","Course", new {id = courseApp.Id })'" style="cursor:pointer;">
+                                            <td>@courseApp.Name</td>
+                                            <td>@Html.Raw(@courseApp.Description)</td>
+                                            <td>@courseApp.CreatedDate</td>
+                                            <td>@courseApp.CourseType.Type</td>
+                                        </tr>
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <h3>No courses as customer found.</h3>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+       
     </div>
 </div>
+
 <style>
     #bio-table td{
         padding-bottom:5px;
+    }
+    .grey-back {
+        background-color:lightgray;
     }
 </style>
 }

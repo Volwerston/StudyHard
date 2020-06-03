@@ -10,5 +10,6 @@ namespace StudyHard.Persistence.Interfaces
         List<CourseApplication> Find(string name, List<int> courseTypes);
         Task<int> Create(CourseApplication application);
         Task Deactivate(int courseApplicationId);
+        Task<List<CourseApplication>> GetCourseApplicationsForUser(long userId);
     }
 }

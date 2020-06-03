@@ -13,5 +13,6 @@ namespace StudyHard.Domain
         public int TutorId { get; set; }
         public int CourseApplicationId { get; set; }
         public int CourseTypeId { get; set; }
+        public CourseType CourseType { get; set; }
     }
 }

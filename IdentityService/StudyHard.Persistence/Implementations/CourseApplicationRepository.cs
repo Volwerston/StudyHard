@@ -120,5 +120,34 @@ namespace StudyHard.Persistence.Implementations
                     });
             }
         }
+
+        public async Task<List<CourseApplication>> GetCourseApplicationsForUser(long userId)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                return connection.Query<CourseApplication, CourseType, CourseApplication>(
+                   @"SELECT 
+                        	CA.Id, 
+                        	CA.Name, 
+                        	CA.ShortDescription, 
+                        	CA.ApplicantId as UserId, 
+                        	CA.CreatedDate, 
+                        	CA.Active,
+                        	CT.Id,
+                        	CT.Type
+                        FROM [dbo].[CourseApplication] CA 
+                        INNER JOIN [dbo].[CourseType] CT ON CA.CourseTypeId = CT.Id
+                        WHERE CA.ApplicantId = @userId
+                        ORDER BY CA.CreatedDate",
+                   (ca, ct) =>
+                   {
+                       ca.CourseType = ct;
+                       return ca;
+                   },
+                   new { userId },
+                   splitOn: "Id"
+               ).ToList();
+            }
+        }
     }
 }
