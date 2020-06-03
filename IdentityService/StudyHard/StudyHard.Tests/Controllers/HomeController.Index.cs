@@ -164,13 +164,44 @@ namespace StudyHard.Tests.Controllers
         }
 
         [Fact]
-        public void CanSeePersonalInfo()
+        public async void CanSeePersonalInfo()
         {
 
+            _userInfoProviderMock.Setup(_ => _.IsAuthenticated(It.IsAny<ClaimsPrincipal>())).Returns(true).Verifiable();
+            _userRepositoryMock.Setup(_ => _.GetUserIdByEmail(It.IsAny<string>())).Returns(userId).Verifiable();
+            _userRepositoryMock.Setup(_ => _.FindUsers(It.IsAny<List<long>>())).Returns(new List<User> { user });
+            _userRepositoryMock.Setup(_ => _.FindRoles(It.IsAny<User>())).ReturnsAsync(roles);
+
+            var response = await _controller.Index();
+            Mock.Verify(_userInfoProviderMock, _userRepositoryMock);
+
+            var viewResponse = (ViewResult)response;
+            ((HomeModel)viewResponse.Model).BirthDate.Should().Be(user.BirthDate);
+            ((HomeModel)viewResponse.Model).Roles.Should().BeEquivalentTo(roles);
+            ((HomeModel)viewResponse.Model).Name.Should().Be(user.Name);
+            ((HomeModel)viewResponse.Model).Gender.Should().Be(user.Gender);
+            ((HomeModel)viewResponse.Model).Email.Should().Be(user.Email);
         }
         [Fact]
-        public void CanUpdatePersonalInfo()
+        public async void CanUpdatePersonalInfo()
         {
+            User actualUser = null;
+            _userRepositoryMock.Setup(_ => _.Update(It.IsAny<User>())).Callback((User u) => actualUser = u);
+            HomeModel form = new HomeModel
+            {
+                Email = "newemail@email.com",
+                Name = "Joe",
+                BirthDate = new DateTime(2000, 10, 10),
+                Gender = Gender.Stormtrooper,
+                UserId = userId
+            };
+
+            var response = await _controller.UpdateBio(form);
+
+            actualUser.BirthDate.Should().Be(form.BirthDate);
+            actualUser.Name.Should().Be(form.Name);
+            actualUser.Id.Should().Be(form.UserId);
+            actualUser.Gender.Should().Be(form.Gender);
 
         }
     }
