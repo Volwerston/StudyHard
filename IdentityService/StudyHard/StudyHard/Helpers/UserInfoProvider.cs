@@ -6,6 +6,7 @@ namespace StudyHard.Helpers
     public interface IUserInfoProvider
     {
         string GetUserEmail(ClaimsPrincipal claimsPrincipal);
+        bool IsAuthenticated(ClaimsPrincipal claimsPrincipal);
     }
 
     public class UserInfoProvider : IUserInfoProvider
@@ -15,6 +16,10 @@ namespace StudyHard.Helpers
             return claimsPrincipal.Claims
                 .SingleOrDefault(c => c.Type == ClaimTypes.Email)?
                 .Value;
+        }
+        public bool IsAuthenticated(ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Identity.IsAuthenticated;
         }
     }
 }
