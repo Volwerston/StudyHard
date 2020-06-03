@@ -188,7 +188,9 @@ namespace StudyHard.Controllers
         public IActionResult GetCourses([FromQuery] string name, [FromQuery] List<int> courseTypes,
             [FromQuery] int pageNumber, [FromQuery] int pageSize)
         {
-            return Ok(_courseApplicationRepository.Find(name, courseTypes).Skip(pageSize * (pageNumber - 1)).Take(pageSize));
+            return Ok(_courseApplicationRepository.Search(GetUserId(), name, courseTypes)
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize));
         }
 
         [Authorize]

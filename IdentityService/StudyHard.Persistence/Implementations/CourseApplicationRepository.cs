@@ -47,7 +47,7 @@ namespace StudyHard.Persistence.Implementations
             }
         }
 
-        public List<CourseApplication> Find(string name, List<int> courseTypes)
+        public List<CourseApplication> Search(long userId, string name, List<int> courseTypes)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -59,7 +59,7 @@ namespace StudyHard.Persistence.Implementations
                     ? " AND CT.Id in @courseTypes "
                     : "";
 
-                var whereClause = " WHERE CA.Active = 1 " + nameClause + courseTypesClause;
+                var whereClause = " WHERE CA.Active = 1 AND CA.ApplicantId != @userId " + nameClause + courseTypesClause;
 
                 return connection.Query<CourseApplication, CourseType, CourseApplication>(
                     @"SELECT 
@@ -79,7 +79,7 @@ namespace StudyHard.Persistence.Implementations
                         ca.CourseType = ct;
                         return ca;
                     },
-                    new {name = name, courseTypes = courseTypes},
+                    new {name = name, courseTypes = courseTypes, userId = userId},
                     splitOn: "Id"
                 ).ToList();
             }
