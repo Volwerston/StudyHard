@@ -56,7 +56,8 @@
         </div>
         <div class="tab-pane container fade" id="chat">
             <div class="d-flex justify-content-center" style="margin-top: 10px; margin-bottom: 10px">
-                <button type="button" class="btn btn-primary" onclick="chatWith(this)" tutor-id="@Model.Course.TutorId">
+                <button type="button" class="btn btn-primary" onclick="chatWith(this)" 
+                        collocutor-id="@(Model.UserId == Model.Tutor.Id ? Model.Customer.Id : Model.Tutor.Id)">
                     Chat
                 </button>
             </div>
@@ -91,11 +92,11 @@
 @section Scripts {
     <script type="text/javascript" src="~/js/froala_editor.pkgd.min.js"></script>
     <script type="text/javascript">      
-        function chatWith(tutorDiv) {
-            tutorId = parseInt($(tutorDiv).attr('tutor-id'));
+        function chatWith(chatDiv) {
+            collocutorId = parseInt($(chatDiv).attr('collocutor-id'));
             $.ajax({
                     type: 'GET',
-                    url: "/api/chat/with/" + tutorId,
+                    url: "/api/chat/with/" + collocutorId,
                     success: chatData => {
                         window.location.href=`/Chat/ChatView?chatId=${chatData.chatId}`
                     },
