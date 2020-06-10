@@ -53,7 +53,7 @@ namespace StudyHard.Controllers
                     CourseApplications = await _courseApplicationRepository.GetCourseApplicationsForUser(userId),
                     CoursesAsCustomer = await _courseRepository.GetCoursesAsCustomer(userId),
                     CoursesAsTutor = await _courseRepository.GetCoursesAsTutor(userId),
-                    PictureUrl = User.Claims.SingleOrDefault(x => x.Type == "Picture")?.Value
+                    PictureUrl = User?.Claims?.SingleOrDefault(x => x.Type == "Picture")?.Value ?? null
                 };
             }
             

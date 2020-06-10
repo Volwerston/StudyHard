@@ -24,6 +24,7 @@ namespace IdentityService.Controllers
         private readonly IUserRepository _userRepository;
         private readonly GoogleClient.IGoogleClient _googleClient;
         private readonly IGoogleSignatureValidator _validator;
+        const string DefaultPictureUrl = "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg";
 
         public AuthController(
             ISettings settings, 
@@ -98,7 +99,7 @@ namespace IdentityService.Controllers
                  new Claim(ClaimTypes.Email, payload.Email),
                  new Claim(ClaimTypes.Name, payload.Name), 
                  new Claim(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name))),
-                 new Claim("Picture", payload.Picture),
+                 new Claim("Picture", payload.Picture ?? DefaultPictureUrl),
             };
 
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_settings.SymmetricSigninKey));
