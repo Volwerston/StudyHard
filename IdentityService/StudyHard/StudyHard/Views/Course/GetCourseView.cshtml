@@ -19,8 +19,8 @@
     </h4>
     <p><i>@Model.Course.CreatedDate.ToString("D")</i></p>
     <p>Course type: @Model.CourseType.Type</p>
-    <p>Tutor: @Model.Tutor.Name <@Model.Tutor.Email></p>
-    <p>Student: @Model.Customer.Name <@Model.Customer.Email></p>
+    <p>Tutor: <img class="profile-image" src="@Model.Tutor.PictureUrl" /> @Model.Tutor.Name <@Model.Tutor.Email></p>
+    <p>Student: <img class="profile-image" src="@Model.Customer.PictureUrl" /> @Model.Customer.Name <@Model.Customer.Email></p>
     <div>
         @(new HtmlString(@Model.Course.Description))
     </div>

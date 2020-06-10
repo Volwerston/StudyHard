@@ -85,7 +85,8 @@ namespace IdentityService.Controllers
             var user = new User
             {
                 Email = payload.Email,
-                Name = payload.Name
+                Name = payload.Name,
+                PictureUrl = payload.Picture
             };
 
             await _userRepository.Save(user);

@@ -8,5 +8,6 @@ namespace StudyHard.Domain
         public string Name { get; set; }
         public string Email { get; set; }
         public List<CourseType> Skills { get; set; }
+        public string PictureUrl { get; set; }
     }
 }

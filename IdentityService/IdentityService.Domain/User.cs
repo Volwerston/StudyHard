@@ -10,5 +10,6 @@ namespace IdentityService.Domain
         public string Name { get; set; }
         public Gender Gender { get; set; }
         public DateTime? BirthDate { get; set; }
+        public string PictureUrl { get; set; }
     }
 }

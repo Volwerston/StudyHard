@@ -33,7 +33,7 @@ namespace StudyHard.Persistence.Implementations
             using (var connection = new SqlConnection(_connectionString))
             {
                 var sql = @"
-                      SELECT DISTINCT U.Id, U.Email, U.Name
+                      SELECT DISTINCT U.Id, U.Email, U.Name, U.PictureUrl
                         FROM [dbo].[User] U 
                         INNER JOIN [dbo].[UserRoles] UR ON U.Id = UR.UserId
                         INNER JOIN [dbo].[Role] R ON R.Id = UR.RoleId
@@ -65,6 +65,7 @@ namespace StudyHard.Persistence.Implementations
                         Email = t.Email,
                         Id = t.Id,
                         Name = t.Name,
+                        PictureUrl = t.PictureUrl,
                         Skills = new List<CourseType>()
                     });
 
@@ -92,7 +93,7 @@ namespace StudyHard.Persistence.Implementations
             using (var connection = new SqlConnection(_connectionString))
             {
                 return await connection.QuerySingleOrDefaultAsync<Tutor>(
-                    @"SELECT U.Id, U.Name, U.Email
+                    @"SELECT U.Id, U.Name, U.Email, U.PictureUrl
                          FROM [dbo].[User] U
                          INNER JOIN [dbo].[UserRoles] UR ON U.Id = UR.UserId
                          INNER JOIN [dbo].[Role] R ON R.Id = UR.RoleId

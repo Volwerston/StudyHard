@@ -55,6 +55,9 @@
     <None Update="migrations\0015_Removed_unique_Course_Name_Constraint.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="migrations\0016_Added_PictureUrl.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

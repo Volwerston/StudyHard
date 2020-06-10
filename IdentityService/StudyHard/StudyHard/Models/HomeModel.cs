@@ -19,5 +19,6 @@ namespace StudyHard.Models
         public List<CourseApplication> CourseApplications { get; set; }
         public List<Course> CoursesAsTutor { get; set; }
         public List<Course> CoursesAsCustomer { get; set; }
+        public string PictureUrl { get; set; }
     }
 }
