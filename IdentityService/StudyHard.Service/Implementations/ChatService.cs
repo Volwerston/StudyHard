@@ -31,13 +31,14 @@ namespace StudyHard.Service.Implementations
             var collocutorIds = chats.Select(c => GetCollocutorId(c, userId)).ToList();
             var userNameDict = _userRepository.FindUsers(collocutorIds)
                 .ToDictionary(user => user.Id, user => user.Name);
-
+            var userPictureDict = _userRepository.FindUsers(collocutorIds).ToDictionary(user => user.Id, user => user.PictureUrl);
             return chats.Select(chat =>
                     new UserChatResponse
                     {
                         ChatId = chat.Id,
                         CollocutorId = GetCollocutorId(chat, userId),
                         CollocutorName = userNameDict[GetCollocutorId(chat, userId)],
+                        CollocutorPictureUrl = userPictureDict[GetCollocutorId(chat, userId)],
                         LastMessage = latestMessagesDict.ContainsKey(chat.Id) ?
                             latestMessagesDict[chat.Id].Content :
                             "No messages yet",

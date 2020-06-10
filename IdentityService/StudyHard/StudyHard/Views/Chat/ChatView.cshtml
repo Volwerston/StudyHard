@@ -191,7 +191,7 @@
                             <div class="chat_list @(chat.ChatId == Model.SelectedChatId ? "active_chat" : "")">
                                 <div class="chat_people">
                                     <div class="chat_img">
-                                        <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                                        <img class="profile-image" src="@(chat.CollocutorPictureUrl)" />
                                     </div>
                                     <div class="chat_ib">
                                         <h5>
@@ -230,69 +230,69 @@
     <script>
             let selectedChatId = @(Model.SelectedChatId);
             let userId = @(Model.UserId);
-            
+
             function scrollToBottom() {
               let msgsDiv = document.getElementById('msg_history');
               msgsDiv.scrollTop = msgsDiv.scrollHeight;
             }
-            
+
             $(document).ready(function() {
                 loadMessagesForChat(selectedChatId, scrollToBottom);
-                
+
                 setInterval(function() {
                     loadMessagesForChat(selectedChatId);
                     updateChats();
                 }, 2500);
             })
-                       
-            function onChatSelected(e) {                
+
+            function onChatSelected(e) {
                 // Get selected chat id
                 let newSelectedChatId = parseInt($(e).attr('prop-chat-id'));
-                
+
                 if (newSelectedChatId === selectedChatId)
                 {
                     return;
-                }                
+                }
                 selectedChatId = newSelectedChatId;
-                
+
                 clearMessageField();
-                
+
                 // Change active class
                 $('.active_chat').removeClass('active_chat');
                 $(e).children().addClass('active_chat');
-                
+
                 loadMessagesForChat(selectedChatId, scrollToBottom);
             }
-            
+
             function appendMessage(message) {
                 messageDate = new Date(message.sendTime);
-                dateData = messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
-                
+                dateData = messageDate.toLocaleDateString('ua', { hour: 'numeric', minute: 'numeric' }).split(', ');
+
                 if (message.senderId === userId) {
                     $('#msg_history').append(formOutcomingMessage(message.content, dateData[1], dateData[0]));
                 } else {
-                    $('#msg_history').append(formIncomingMessage(message.content, dateData[1], dateData[0]));
-                }              
+                    $('#msg_history').append(formIncomingMessage(message.content, dateData[1], dateData[0], message.senderId));
+                }
             }
-            
+
             function refillMessages(messages)
             {
                 $('#msg_history').empty();
                 messages.forEach(appendMessage);
-            }            
-           
+            }
+
             function loadMessagesForChat(chatId, action) {
                 if (!action)
                 {
                     action = function() {
-                      
+
                     }
                 }
-                
-                if (selectedChatId === -1) {       
+
+                if (selectedChatId === -1) {
                     return;
                 }
-                
+
                 $.ajax({
                         type: 'GET',
                         url: "/api/chat/" + chatId + "/messages",
@@ -306,20 +306,20 @@
                     }
                 );
             }
-            
+
             function onSendMessage() {
                 let content = $('#write_msg_inp').val();
-                
+
                 if (!content.trim())
                 {
                     return;
                 }
-                
+
                 let requestData = {
                     content: content,
                     chatId: selectedChatId
                 };
-                
+
                 $.ajax({
                         type: 'POST',
                         url: "/api/chat/" + selectedChatId + "/messages",
@@ -335,14 +335,14 @@
                             console.log(resp);
                         }
                     }
-                );              
+                );
             }
-            
+
             function clearMessageField() {
               $('#write_msg_inp').val('');
             }
-            
-            function updateChats() {                       
+
+            function updateChats() {
                 $.ajax({
                         type: 'GET',
                         url: "/api/chat/chat-data",
@@ -353,42 +353,42 @@
                             console.log(resp);
                         }
                     }
-                );    
+                );
             }
-            
+
             function formatMessageDate(date) {
                 messageDate = new Date(date);
-                return messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');              
+                return messageDate.toLocaleDateString('ua',  { hour: 'numeric', minute: 'numeric'}).split(', ');
             }
-            
+
             function updateChatData(chatData) {
                 $('#inbox_chat').empty();
                 chatData.forEach(function(chatInfo) {
                     dateData = formatMessageDate(chatInfo.lastMessageTime);
-                    $('#inbox_chat').append(formCollocutorData(chatInfo.chatId, chatInfo.collocutorId, chatInfo.collocutorName, chatInfo.lastMessage, dateData[0]));
+                    $('#inbox_chat').append(formCollocutorData(chatInfo.chatId, chatInfo.collocutorId, chatInfo.collocutorName, chatInfo.lastMessage, dateData[0], chatInfo.collocutorPictureUrl));
                 });
-            }      
-            
+            }
+
             function updateCollocutors(message) {
                 let collocutorElem = $('div[prop-chat-id="' + selectedChatId + '"]');
+                let collocutorId = collocutorElem.attr('prop-chat-collocutor-id');
+                let collocutorName = collocutorElem.attr('prop-chat-collocutor-name');
                 
-                collocutorId = collocutorElem.attr('prop-chat-collocutor-id');
-                collocutorName = collocutorElem.attr('prop-chat-collocutor-name');
-              
-                dateData = formatMessageDate(message.sendTime);
-                messageDate = new Date(message.sendTime);
-                
+                let collocutorPictureUrl = collocutorElem.attr('prop-chat-collocutor-pictureUrl');
+                let dateData = formatMessageDate(message.sendTime);
+                let messageDate = new Date(message.sendTime);
+
                 collocutorElem.remove();
-                $('#inbox_chat').prepend(formCollocutorData(selectedChatId, collocutorId, collocutorName, message.content, dateData[0]));
+                $('#inbox_chat').prepend(formCollocutorData(selectedChatId, collocutorId, collocutorName, message.content, dateData[0], collocutorPictureUrl));
             }
-            
-            function formCollocutorData(chatId, collocutorId, collocutorName, message, date) {
+
+        function formCollocutorData(chatId, collocutorId, collocutorName, message, date, collocutorPictureUrl) {
               return `<div prop-chat-id="` + chatId + `" prop-chat-collocutor-id="` + collocutorId + `" prop-chat-collocutor-name="${collocutorName}"
                              onclick="onChatSelected(this)">
                             <div class="chat_list ${chatId === selectedChatId ? 'active_chat' : ''}">
                                 <div class="chat_people">
                                     <div class="chat_img">
-                                        <img src="https://ptetutorials.com/images/user-profile.png">
+                                        <img class="profile-image" src="${collocutorPictureUrl}" />
                                     </div>
                                     <div class="chat_ib">
                                         <h5>
@@ -402,12 +402,13 @@
                             </div>
                         </div>`
             }
-                
-            
-            function formIncomingMessage(content, time, date) {
+
+
+        function formIncomingMessage(content, time, date, senderId) {
+            let image = $(`div[prop-chat-collocutor-id="${senderId}"] img`).first().clone()[0].outerHTML;
               return `<div class="incoming_msg">
                                       <div class="incoming_msg_img">
-                                          <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil">
+                                          ${image}
                                       </div>
                                       <div class="received_msg">
                                           <div class="received_withd_msg">
@@ -419,8 +420,8 @@
                                       </div>
                                   </div>`
             }
-            
-            function formOutcomingMessage(content, time, date) {
+
+        function formOutcomingMessage(content, time, date, senderId) {
               return `<div class="outgoing_msg">
                         <div class="sent_msg">
                             <p>
@@ -430,5 +431,5 @@
                         </div>
                     </div>`
             }
-    	</script>
+    </script>
 }

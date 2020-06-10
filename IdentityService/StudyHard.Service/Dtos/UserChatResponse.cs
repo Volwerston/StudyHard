@@ -8,7 +8,7 @@ namespace StudyHard.Service.Dtos
         
         public long CollocutorId { get; set; }
         public string CollocutorName { get; set; }
-        
+        public string CollocutorPictureUrl { get; set; }
         public string LastMessage { get; set; }
         public DateTime LastMessageTime { get; set; }
     }
