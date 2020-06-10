@@ -17,6 +17,8 @@ namespace StudyHard.Helpers
                 .SingleOrDefault(c => c.Type == ClaimTypes.Email)?
                 .Value;
         }
+        public string GetUserPictureUrl(ClaimsPrincipal claimsPrincipal)
+            => claimsPrincipal.Claims.SingleOrDefault(x => x.Type == "Picture")?.Value;
         public bool IsAuthenticated(ClaimsPrincipal claimsPrincipal)
         {
             return claimsPrincipal.Identity.IsAuthenticated;

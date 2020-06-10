@@ -96,7 +96,8 @@ namespace IdentityService.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, payload.Email),
                  new Claim(ClaimTypes.Email, payload.Email),
                  new Claim(ClaimTypes.Name, payload.Name), 
-                 new Claim(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name)))
+                 new Claim(ClaimTypes.Role, string.Join(",", roles.Select(r => r.Name))),
+                 new Claim("Picture", payload.Picture),
             };
 
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_settings.SymmetricSigninKey));
